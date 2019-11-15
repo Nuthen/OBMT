@@ -97,22 +97,6 @@ div.detail-circle {
 `;
 
 export const Landing = () => (
-/* <body style={{"backgroundColor":"#FECB4E"}}>
-    <div style={{"display":"flex","height":"98vh","flexDirection":"column"}}>
-        <div style={{"display":"flex","height":"70vh","borderStyle":"solid","flexDirection":"row","backgroundColor":"#0982AF","borderRadius":"25px","borderColor":"#707070","justifyContent":"space-around","alignItems":"center","backgroundImage":myimg,"backgroundSize":"contain","backgroundRepeat":"no-repeat","maxWidth":"100%"}}></div>
-        <div style={{"display":"flex","height":"5vh"}}></div>
-        <div style={{"display":"flex","height":"30vh","borderStyle":"solid","flexDirection":"row","backgroundColor":"#0982AF","borderRadius":"25px","borderColor":"#707070","justifyContent":"space-around","alignItems":"center"}}>
-            <div style={{"display":"flex","justifyContent":"space-around","alignItems":"center","height":"67%","width":"10%","borderStyle":"solid","borderRadius":"50%","borderColor":"#707070","backgroundColor":"#93C8DC"}}>detail1</div>
-            <div style={{"display":"flex","justifyContent":"space-around","alignItems":"center","height":"67%","width":"10%","borderStyle":"solid","borderRadius":"50%","borderColor":"#707070","backgroundColor":"#93C8DC"}}>detail2</div>
-            <div style={{"display":"flex","height":"80%","width":"20vw","borderStyle":"solid","borderRadius":"25px","borderColor":"#707070","backgroundColor":"#93C8DC","flexDirection":"column","justifyContent":"space-around","alignItems":"center"}}>
-                <div style={{"display":"flex","height":"40%","width":"70%","justifyContent":"space-around","alignItems":"center","borderStyle":"solid","borderRadius":"25px","borderColor":"#707070","backgroundColor":"#2699FB"}}>Login</div>
-                <div style={{"display":"flex","height":"40%","width":"70%","justifyContent":"space-around","alignItems":"center","borderStyle":"solid","borderRadius":"25px","borderColor":"#707070","backgroundColor":"#2699FB"}}>Register</div>
-            </div>
-            <div style={{"display":"flex","justifyContent":"space-around","alignItems":"center","height":"67%","width":"10%","borderStyle":"solid","borderRadius":"50%","borderColor":"#707070","backgroundColor":"#93C8DC"}}>detail3</div>
-            <div style={{"display":"flex","justifyContent":"space-around","alignItems":"center","height":"67%","width":"10%","borderStyle":"solid","borderRadius":"50%","borderColor":"#707070","backgroundColor":"#93C8DC"}}>detail4</div>
-        </div>
-    </div>
-</body> */
 <Styles>
     <body>
         <div class="shell">
