@@ -1,23 +1,31 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
-import Home from './pages/Home';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import {Home} from './pages/Home';
 import List from './pages/List';
+import {Landing} from './pages/landing';
+import {Main} from './pages/maincontent';
+import { NaviBar } from './components/navigation';
+import { Structure } from './components/structure';
 
-class App extends Component {
-  render() {
-    const App = () => (
+
+class App extends Component{
+  render(){
+    return(
+    <React.Fragment>
+      <BrowserRouter>
       <div>
-        <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route path='/list' component={List}/>
-        </Switch>
+      <Structure>
+          <Switch>
+            <Route exact path='/' component={Home}/>
+            <Route path='/list' component={List}/>
+            <Route path='/landing' component={Landing}/>
+            <Route path='/maincontent' component={Main}/>
+          </Switch>
+      </Structure>
       </div>
-    )
-    return (
-      <Switch>
-        <App/>
-      </Switch>
+      </BrowserRouter>
+    </React.Fragment>
     );
   }
 }
