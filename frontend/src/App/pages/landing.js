@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import mainImage from './../Images/img1.png'
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -14,7 +13,7 @@ const converted = {
         borderColor: "#707070",
         justifyContent: "space-around",
         alignItems: "center",
-        backgroundImage: 'url("./../Images/img1.png")',
+        backgroundImage: 'url("./img1.png")',
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         maxWidth: "100%"
