@@ -5,7 +5,6 @@ import {Home} from './pages/Home';
 import List from './pages/List';
 import {Landing} from './pages/landing';
 import {Main} from './pages/maincontent';
-import { NaviBar } from './components/navigation';
 import { Structure } from './components/structure';
 
 

@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useContext, createContext } from 'react';
+import { ModalProvider, Modal } from '../components/loginModal';
+
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -72,22 +74,67 @@ const converted = {
     }
 };
 
-export const Landing = () => (
-    <div className="body" style={converted.body}>
-        <div className="shell" style={converted[".shell"]}>
-            <div className="content-upper" style={converted[".content-upper"]} />
-            <div className="content-splitter" style={converted[".content-splitter"]} />
-            <div className="content-lower" style={converted[".content-lower"]}>
-                <div className="detail-circle" style={converted[".detail-circle"]}>detail1</div>
-                <div className="detail-circle" style={converted[".detail-circle"]}>detail2</div>
-                <div className="access-container" style={converted[".access-container"]}>
-                    <div className="access-box" style={converted[".access-box"]}>Login</div>
-                    <div className="access-box" style={converted[".access-box"]}>Register</div>
+
+
+// export const Landing = () => (
+export function Landing() {
+    // const onButtonClick = useContext(ModalContext);
+    const [isRegModalOpen, setRegModal] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    
+
+
+    return (
+        <ModalProvider>
+            <div className="body" style={converted.body}>
+                <div className="shell" style={converted[".shell"]}>
+                    <div className="content-upper" style={converted[".content-upper"]} />
+                    <div className="content-splitter" style={converted[".content-splitter"]} />
+                    <div className="content-lower" style={converted[".content-lower"]}>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>detail1</div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>detail2</div>
+                        <div className="access-container" style={converted[".access-container"]}>
+
+                            
+                            {/* These next sections are the log in and register options */}
+
+                            <div className="access-box" style={converted[".access-box"]}>
+                                <div onClick={() => setIsModalOpen(true)}>Login</div>
+                                {isModalOpen && (
+                                    <Modal onClose={() => setIsModalOpen(false)} style={{ width: 400, textAlign: "center" }}>
+                                        <p>Username</p>
+                                        <input type="text" name="name" />
+                                        <p>password</p>
+                                        <input type="text" name="name" />
+                                    </Modal>
+                                )}
+                            </div>
+
+                            <div className="access-box" style={converted[".access-box"]}>
+                                <div onClick={() => setRegModal(true)}>Register</div>
+                                {isRegModalOpen && (
+                                    <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
+                                        <p>Username</p>
+                                        <input type="text" name="name" />
+                                        <p>password</p>
+                                        <input type="text" name="name" />
+                                        <p>dob</p>
+                                        <input type="text" name="name" />
+                                    </Modal>
+                                )}
+                            </div>
+                            
+
+                        </div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>detail3</div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>detail4</div>
+                    </div>
                 </div>
-                <div className="detail-circle" style={converted[".detail-circle"]}>detail3</div>
-                <div className="detail-circle" style={converted[".detail-circle"]}>detail4</div>
             </div>
-        </div>
-    </div>
-)
+        </ModalProvider>
+    )
+}
+// )
+
 
