@@ -106,7 +106,7 @@ export function Landing() {
                                         <p>Username</p>
                                         <input type="text" name="name" />
                                         <p>password</p>
-                                        <input type="text" name="name" />
+                                        <input type="text" name="password" />
                                     </Modal>
                                 )}
                             </div>
@@ -118,9 +118,9 @@ export function Landing() {
                                         <p>Username</p>
                                         <input type="text" name="name" />
                                         <p>password</p>
-                                        <input type="text" name="name" />
+                                        <input type="text" name="password" />
                                         <p>dob</p>
-                                        <input type="text" name="name" />
+                                        <input type="text" name="dob" />
                                     </Modal>
                                 )}
                             </div>
