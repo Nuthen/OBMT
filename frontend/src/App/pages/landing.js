@@ -1,5 +1,6 @@
 import React, { Component, useState, useContext, createContext } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
+import axios from 'axios';
 
 
 const converted = {
@@ -83,7 +84,13 @@ export function Landing() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     
-
+    function doSomething() {
+        //do something
+        axios.get(`/api/getList`)
+          .then(res => {
+            console.log(res.data)    
+        })
+    }
 
     return (
         <ModalProvider>
@@ -107,6 +114,7 @@ export function Landing() {
                                         <input type="text" name="name" />
                                         <p>password</p>
                                         <input type="text" name="password" />
+                                        <button name="New" onClick={() => doSomething()}>NEW</button>
                                     </Modal>
                                 )}
                             </div>
