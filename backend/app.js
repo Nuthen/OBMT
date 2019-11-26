@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.get('/api/getList', (req,res) => {
     
     
-    var list = [{Title: "Book Test",URL:"test.com" , Prioriyty:"5" , Description:"Test bookmark" , Date: "11-26"};
+    var list = [{Title: "Book Test",URL:"test.com" , Prioriyty:"5" , Description:"Test bookmark" , Date: "11-26"}];
     res.json(list);
     console.log('Sent list of items');
 });
