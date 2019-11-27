@@ -102,7 +102,7 @@ export function Landing() {
             if(res == 1){
                 //successful login
                 // Store user's DB ID in global variable
-                this.UserId = res.data;
+                UserId = res.data;
             }
             else {
                 //unsuccessful login
@@ -120,6 +120,7 @@ export function Landing() {
         .then(res => {
             if(res == 1){
                 //successful register & login
+                UserId = res.data;
             }
             else {
                 //unsuccessful register (could be login exists OR some other issue)
