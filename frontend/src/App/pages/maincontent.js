@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState} from 'react'
+import { ModalProvider, Modal } from '../components/loginModal';
 
 const converted = {
     body: { margin: "0" },
@@ -33,7 +34,7 @@ const converted = {
         display: "flex",
         width: "33%",
         flexGrow: "1",
-        height:"100%",
+        height: "100%",
         justifyContent: "center",
     },
 
@@ -53,10 +54,15 @@ const converted = {
         fontFamily: '"Bauhaus 93", "Arial", sans-serif',
         fontSize: "8vh",
     },
-    
-    ".search": {height: "100%", width: "100%", fontSize: "40px"},
-    
-    ".add-bm": {color: "white", fontFamily: '"Arial", sans-serif', fontSize: "4vh", fontWeight: 'bold' },
+
+    ".search": { height: "100%", width: "100%", fontSize: "40px" },
+
+    ".add-bm": { color: "white", fontFamily: '"Arial", sans-serif', fontSize: "4vh", fontWeight: 'bold', cursor: "pointer", },
+
+    ".bookmark-modal": {
+        width: 400, 
+        textAlign: "center",
+    },
 
     ".content-main": {
         display: "flex",
@@ -75,22 +81,40 @@ const converted = {
 
 
 export function Main() {
-
+    const [isBookMarkModalOpen, setBookMarkModal] = useState(false);
     return (
+        <ModalProvider>
         <div className="shell" style={converted[".shell"]}>
             <div className="content-bar" style={converted[".content-bar"]}>
 
                 <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="landing" style={converted[".logo a"]}>OBMT</a></h1></div>
-                
+
                 <div style={converted[".search-box"]}><input type="search" className="search" style={converted[".search"]} placeholder="search..." /></div>
-                
-                <div style={converted[".bookmark-box"]}><div className="add-bm" style={converted[".add-bm"]}><p>Add Bookmark</p></div></div>
+
+                <div style={converted[".bookmark-box"]}>
+                    <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted[".add-bm"]}>Add Bookmark</div>
+                    {isBookMarkModalOpen && (
+                        <Modal onClose={() => setBookMarkModal(false)} style={converted[".bookmark-modal"]} >
+                            <p>title</p>
+                            <input type="text" name="title" />
+                            <p>url</p>
+                            <input type="text" name="url" />
+                            <p>priority</p>
+                            <input type="text" name="priority" />
+                            <p>description</p>
+                            <input type="text" name="description" />
+                            <p>tags</p>
+                            <input type="text" name="tags" />
+                        </Modal>                        
+                    )}
+                </div>
 
             </div>
             <div className="content-main" style={converted[".content-main"]}>
                 <div className="bookmark-display" style={converted[".bookmark-display"]}></div>
             </div>
         </div>
+        </ModalProvider>
 
     )
 }
