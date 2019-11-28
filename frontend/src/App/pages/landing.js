@@ -76,7 +76,7 @@ const converted = {
     }
 };
 
-// export const Landing = () => (
+
 export function Landing() {
     // const onButtonClick = useContext(ModalContext);
     const [isRegModalOpen, setRegModal] = useState(false);
@@ -233,6 +233,6 @@ export function Landing() {
         </ModalProvider>
     )
 }
-// )
+
 
 
