@@ -1,6 +1,7 @@
 import React, { Component, useState, useContext, createContext } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
 import axios from 'axios';
+import { builtinModules } from 'module';
 
 
 const converted = {
@@ -75,20 +76,109 @@ const converted = {
     }
 };
 
-
-
 // export const Landing = () => (
 export function Landing() {
     // const onButtonClick = useContext(ModalContext);
     const [isRegModalOpen, setRegModal] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    
+    let UserId = 0;
+
+    // PROTOtYPE FOR BACKEND CALL
     function doSomething() {
-        //do something
         axios.get(`/api/getList`)
           .then(res => {
             console.log(res.data)    
+        })
+    }
+
+    // LOGIN CALL
+    function CallLogin(name, pw) {
+        axios.post(`/api/login`, {
+            username: name,
+            password: pw
+        })
+        .then(res => {
+            if(res == 1){
+                //successful login
+                // Store user's DB ID in global variable
+                UserId = res.data;
+            }
+            else {
+                //unsuccessful login
+            }    
+        })
+    }
+
+    // REGISTER CALL
+    function CallRegister(name, pw, dob) {
+        axios.post(`/api/register`, {
+            username: name,
+            password: pw,
+            birthdate: dob
+        })
+        .then(res => {
+            if(res == 1){
+                //successful register & login
+                UserId = res.data;
+            }
+            else {
+                //unsuccessful register (could be login exists OR some other issue)
+            }    
+        })
+    }
+
+    // ADD/EDIT CALL
+    function CallRegister(bid, t, u, p, desc, d, tag) {
+        axios.post(`/api/modify`, {
+            userId: UserId,
+            bid: builtinModules,
+            title: t,
+            url: u,
+            priority: p,
+            description: desc,
+            date: d,
+            tags: tag
+        })
+        .then(res => {
+            if(res == 1){
+                //successful creation / modification of bookmark
+            }
+            else {
+                // something went wrong
+            }    
+        })
+    }
+
+    //DELETE CALL
+    function CallDelete(bid) {
+        axios.post(`/api/delete`, {
+            userId: UserId,
+            bid: builtinModules
+        })
+        .then(res => {
+            if(res == 1){
+                //successful deletion of bookmark
+            }
+            else {
+                // something went wrong
+            }    
+        })
+    }
+
+    //SEARCH CALL
+    function CalSearch(searchString) {
+        axios.post(`/api/search`, {
+            userId: UserId,
+            search: searchString
+        })
+        .then(res => {
+            if(res == 1){
+                // @@@@@@@@@@@@@@ HANDLE RETURNED STUFF @@@@@@@@@@@@@@@@@
+            }
+            else {
+                // something went wrong
+            }    
         })
     }
 
