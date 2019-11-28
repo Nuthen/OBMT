@@ -80,7 +80,7 @@ export function Main() {
         <div className="shell" style={converted[".shell"]}>
             <div className="content-bar" style={converted[".content-bar"]}>
 
-                <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="#" style={converted[".logo a"]}>OBMT</a></h1></div>
+                <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="landing" style={converted[".logo a"]}>OBMT</a></h1></div>
                 
                 <div style={converted[".search-box"]}><input type="search" className="search" style={converted[".search"]} placeholder="search..." /></div>
                 
