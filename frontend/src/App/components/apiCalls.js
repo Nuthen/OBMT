@@ -2,37 +2,39 @@ import { builtinModules } from 'module';
 import axios from 'axios';
 
 
-// PROTOtYPE FOR BACKEND CALL
+// PROTOTYPE FOR BACKEND CALL
 export function doSomething() {
         axios.get(`/api/getList`)
           .then(res => {
             console.log(res.data)    
     })
-}
+}// END PROTOTYPE
 
 
 let UserId = 0;
 
 // LOGIN CALL
+// RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallLogin(name, pw) {
     axios.post(`/api/login`, {
         username: name,
         password: pw
     })
     .then(res => {
-        if(res == 1){
-            //successful login
-            // Store user's DB ID in global variable
-            UserId = res.data;
+        if(res.data[0] == true){
+            UserId = res.data[1];
+            return true;
         }
         else {
-            //unsuccessful login
-        }    
+            //displayError
+            return false;
+        }  
     })
 }
 
 
 // REGISTER CALL
+// RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallRegisterLogin(name, pw, dob) {
     axios.post(`/api/register`, {
         username: name,
@@ -40,12 +42,13 @@ export function CallRegisterLogin(name, pw, dob) {
         birthdate: dob
     })
     .then(res => {
-        if(res == 1){
-            //successful register & login
-            UserId = res.data;
+        if(res.data[0] == true){
+            UserId = res.data[1];
+            return true;
         }
         else {
-            //unsuccessful register (could be login exists OR some other issue)
+            //displayError
+            return false;
         }    
     })
 }
@@ -63,11 +66,13 @@ export function CallRegisterBookmark(bid, t, u, p, desc, d, tag) {
         tags: tag
     })
     .then(res => {
-        if(res == 1){
-            //successful creation / modification of bookmark
+        if(res.data[0] == true){
+            //displaySuccess
+            return true;
         }
         else {
-            // something went wrong
+            //displayError
+            return false;
         }    
     })
 }
@@ -79,27 +84,31 @@ export function CallDelete(bid) {
         bid: builtinModules
     })
     .then(res => {
-        if(res == 1){
-            //successful deletion of bookmark
+        if(res.data[0] == true){
+            //displaySuccess
+            return true;
         }
         else {
-            // something went wrong
+            //displayError
+            return false;
         }    
     })
 }
 
 //SEARCH CALL
-export function CalSearch(searchString) {
+export function CallSearch(searchString) {
     axios.post(`/api/search`, {
         userId: UserId,
         search: searchString
     })
     .then(res => {
-        if(res == 1){
-            // @@@@@@@@@@@@@@ HANDLE RETURNED STUFF @@@@@@@@@@@@@@@@@
+        if(res.data[0] == true){
+            //handle returned shit here
+            return true; // will return something else
         }
         else {
-            // something went wrong
-        }    
+            //displayError
+            return false;
+        }     
     })
 }
