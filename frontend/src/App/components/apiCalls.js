@@ -104,7 +104,7 @@ export function CallSearch(searchString) {
     .then(res => {
         if(res.data[0] == true){
             //handle returned shit here
-            return res.data; // returning data array (?)
+            return res.data; // returning data array (?) -- Might cause Issues still because 1st field is checked for true / false
         }
         else {
             //displayError
