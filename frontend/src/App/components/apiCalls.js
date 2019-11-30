@@ -104,7 +104,7 @@ export function CallSearch(searchString) {
     .then(res => {
         if(res.data[0] == true){
             //handle returned shit here
-            return true; // will return something else
+            return res.data; // returning data array (?)
         }
         else {
             //displayError
