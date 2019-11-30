@@ -9,10 +9,13 @@ const app = express();
 //const port = 3306;
 
 //module.exports = {
-     //getHomePage: (req, res) => {
-     function getHomePage() {
-        let query = "SELECT * FROM `bookmark` ORDER BY BID ASC"; // query database to get all the players
+//getHomePage: (req, res) => {
+//app.post('/api/getHomePage', (req,res) => {
+    function getHomePage() {
+        let query = "SELECT * FROM `bookmark` ORDER BY BID ASC"; 
 
+        console.log('Bookmark results');
+        
         // execute query
         db.query(query, (err, result) => {
             if (err) {
@@ -22,29 +25,32 @@ const app = express();
         });
     }
 //};
-
+//app.post('/api/login', (req,res) => {
 function loginValidation(){
+    //TEST DATA
     var userName = 'Jo';
     var password = '1234';
     
+    //Return to front end. Contains login status and message
     var loginReport;
     
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + userName + "'";
     
-    db.query(userQuery, (error, results) => {
+    db.query(userQuery, (error, userResults) => {
+        //Report query error
         if (error) {
             //res.redirect('/');
             loginReport = [{
-            status:false,
-                  message:"There are some error with query"
+                status:false,
+                message:"There are some error with query"
             //status = false;
             //console.log('There are some error with query');
             }];
         }
     
-        else if(results.length >0){
-            //console.log(results);
-            if(password==results[0].Password){
+        //Check user input password against database information
+        else if(userResults.length >0){
+            if(password==userResults[0].Password){
                 //res.redirect('/');
                 loginReport = [{
                     status:true,
@@ -56,12 +62,12 @@ function loginValidation(){
                 //res.redirect('/');
                 loginReport = [{
                     status:false,
-                      message:"Username and password does not match"
-                
+                    message:"Username and password does not match"
                 }]; 
             }
         }
         
+        //Report nonexisting user
         else{
             //res.redirect('/');
             loginReport = [{
@@ -70,93 +76,141 @@ function loginValidation(){
             }];
         }
         
+        //Return results to front-end
         console.log(loginReport);
     });
+    
+    //Return results to front-end
+    //ADD
+    //res.json(loginReport);
 }
     
+//app.post('/api/register', (req,res) => {
 function registrationValidation(){
-    var UID = 111;
-    var Username = "nicetry"; 
-    var Password = "test";
-    var FName = "joke";
-    var LName = "ster";
+    //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName, and maybe Admin?
+    var Username = "sam"; 
+    var Password = "secret";
+    var FName = "sammy";
+    var LName = "jammy";
     
     var dateObj = new Date();
     var month = dateObj.getUTCMonth() + 1; //months from 1-12
     var day = dateObj.getUTCDate();
     var year = dateObj.getUTCFullYear();
-    
     var newdate = year + "/" + month + "/" + day;
     
-    //var RegDate = new Date();
-    var Admin = true;
+    var Admin = false;
     
+    //To be returned to front end. Contains regisration status and message
     var registerReport;
+    var UIDReport;
+    var UIDDeterminer = 0;
+    var userCount = 0;
     
+    var UIDQuery = "SELECT * FROM `user` ORDER BY UID ASC";
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + Username + "'";
     
-    db.query(userQuery, (error, results) => {
-        if (error) {
+    db.query(UIDQuery, (errorA, UIDResults) => {
+        //Report query error
+        if (errorA) {
             //res.redirect('/');
-            registerReport = [{
+            UIDReport = [{
                 status:false,
-                message:"There are some error with query"
+                message:"There are some error with query for UID"
             //status = false;
             //console.log('There are some error with query');
             }];
         }
     
-        else if(results.length >0){
-            console.log(results);
-            //if(password==results[0].Password){
-                //res.redirect('/');
-            registerReport = [{
-                status:false,
-                message:"User name is already taken. Please enter another username."
+        //Report ids found
+        else if(UIDResults.length >0){
+            console.log('Current Users');
+            console.log(UIDResults);
+            UIDReport = [{
+                status:true,
+                message:"Ids found."
             }];
-        //} 
+            
+            UIDDeterminer = 1;
+            userCount = UIDResults.length;
+            UID = (UIDResults[userCount - 1].UID) + 1;
         }
-            
+        
+        //Create id for empty table
         else{
-             //res.redirect('/');
+            UIDReport = [{
+                status:true,
+                message:"No current Ids found."
+            }];
             
-            //var myobj = { UID: 111, Username: "nicetry", Password: "test", FName: "joke", LName: "ster", RegDate: 2019-11-04, Admin: 3};
-            
-            //var myobj2 = [ '111', 'nicetry', 'test', 'joke', 'ster', '2019-11-04', '3'];
-             
-            var insertUser = "INSERT INTO user(UID, Username, Password, FName, LName, RegDate, Admin) VALUES (" + UID + ", '" + Username + "', '" + Password + "', '" + FName + "', '" + LName + "', " + newdate + ", " + Admin + ")";
-            
-            //var insertUser = "INSERT INTO `user` SET "; 
-            
-            console.log(insertUser);
-            //db.collection("user").insertOne(myobj, (err, res) {    
-            //db.query(insertUser, (err2, inserted) => {
-            db.query(insertUser, (err2, inserted) => {
-                if (err2) {
-                    //throw err;
+            UIDDeterminer = 1;
+            UID = 1;
+        }
+        
+        console.log(UIDReport);
+        console.log('New UID');
+        console.log(UID);    
+        
+        if (UIDDeterminer == 1){
+            db.query(userQuery, (errorB, userResults) => {
+                //Report query error
+                if (errorB) {
+                    //res.redirect('/');
                     registerReport = [{
                         status:false,
-                        message:"Error registering."
+                        message:"There are some error with query"
+                    //status = false;
+                    //console.log('There are some error with query');
                     }];
                 }
-             
-                else{
+            
+                //Report username already exists
+                else if(userResults.length >0){
+                    //console.log(userResults);
+                    //if(password==userResults[0].Password){
+                        //res.redirect('/');
                     registerReport = [{
-                        status:true,
-                        message:"Thank you! You are successfully registered."
+                        status:false,
+                        message:"User name is already taken. Please enter another username."
                     }];
                 }
-    
-                
+                    
+                //Insert new user
+                else{
+                     //res.redirect('/');
+                    var insertUser = "INSERT INTO user(UID, Username, Password, FName, LName, RegDate, Admin) VALUES (" + UID + ", '" + Username + "', '" + Password + "', '" + FName + "', '" + LName + "', '" + newdate + "', " + Admin + ")";
+                    
+                    console.log(insertUser);
+        
+                    db.query(insertUser, (err2, inserted) => {
+                        //Report query error
+                        if (err2) {
+                            //throw err;
+                            registerReport = [{
+                                status:false,
+                                message:"Error registering."
+                            }];
+                        }
+                     
+                        //Report user registration success
+                        else{
+                            registerReport = [{
+                                status:true,
+                                message:"Thank you! You are successfully registered."
+                            }];
+                        }
+                        
+                        console.log(registerReport);
+                    });
+                }
             });
         }
-        console.log(registerReport);
-     });
+    });
+    
+    //Return results to front-end
+    //ADD
+    //res.json(registerReport);
 }
-
-
-
-
 
 // create connection to database
 // the mysql.createConnection function takes in a configuration object which contains host, user, password and the database name.
@@ -176,7 +230,7 @@ db.connect((err) => {
     
     getHomePage();
     loginValidation();
-    registrationValidation()
+    registrationValidation();
 });
 
 global.db = db;
@@ -219,6 +273,21 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 });
 */
 
+
+//TEST CONNECTION TO FRONT-END
+app.get('/api/getList', (req,res) => {
+    var list = ["item1", "item2", "item3"];
+    
+    console.log(req.username);
+    if(req.username == "blue")
+        {
+            list = ["apple", "climb", "jump"];
+        }
+    
+    res.json(list);
+    console.log('Sent');
+});
+/*
 // An api endpoint that returns a short list of items
 app.get('/api/getList', (req,res) => {
     
@@ -227,7 +296,7 @@ app.get('/api/getList', (req,res) => {
     res.json(list);
     console.log('Sent list of items');
 });
-
+*/
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
