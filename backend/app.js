@@ -155,6 +155,176 @@ function registrationValidation(){
 }
 
 
+function addBookmark(){
+    var UID = 111;
+    //var BID = ???
+    // new BID determined by max BID + 1 
+    
+    var Title = "mytitle2"; 
+    var URL = "umdearborn.edu";
+    var Priority = 1;
+    var Description = "My cool website2.";
+    
+    var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+    
+    var newdate = year + "/" + month + "/" + day;
+    
+    var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
+    var maxQuery = "SELECT MAX(BID) as BID FROM `bookmark`";
+    
+    var bookmarkReport;
+    
+    // Query to find new BID
+    db.query(maxQuery, (error, result, fields) => {
+        if (error) {
+            //res.redirect('/');
+            bookmarkReport = [{
+                status:false,
+                message:"There are some error with query"
+            }];
+            console.log(bookmarkReport);
+        }  
+        else{
+            console.log("BID: " + JSON.stringify(result[0].BID));
+            
+            var newBID = 0;
+            
+            if (result[0].BID != null) {            
+                newBID = result[0].BID + 1;
+            }
+            
+            // Query to find if BID already created
+            db.query(bookmarkQuery, (error, results) => {
+                if (error) {
+                    //res.redirect('/');
+                    bookmarkReport = [{
+                        status:false,
+                        message:"There are some error with query"
+                    }];
+                }
+
+                else if(results.length >0){
+                    console.log(results);
+                    bookmarkReport = [{
+                        status:false,
+                        message:"Bookmark is already created."
+                    }];
+                }
+
+                else{
+                    var insertBookmark = "INSERT INTO bookmark(BID, UID, Title, URL, Priority, Description, Date) VALUES (" + newBID + ", " + UID + ", '" + Title + "', '" + URL + "', '" + Priority + "', '" + Description + "', " + newdate + ")";
+
+                    console.log(insertBookmark);
+                    db.query(insertBookmark, (err2, inserted) => {
+                        if (err2) {
+                            //throw err;
+                            bookmarkReport = [{
+                                status:false,
+                                message:"Error creating bookmark."
+                            }];
+                        }
+
+                        else{
+                            bookmarkReport = [{
+                                status:true,
+                                message:"Bookmark added."
+                            }];
+                        }
+
+
+                    });
+                }
+                console.log(bookmarkReport);
+            });
+        }
+    });
+    
+    
+}
+
+function addTagsToBookmark(){
+    var BID = 112;
+    // new BID determined by max BID + 1 
+    
+    var TagName = 'Ceesharp';
+    //var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
+    var maxQuery = "SELECT MAX(TID) as TID FROM `bkhastag`";
+    
+    var tagReport;
+    
+    // Query to find new TID in bkhastag
+    db.query(maxQuery, (error, result, fields) => {
+        if (error) {
+            //res.redirect('/');
+            tagReport = [{
+                status:false,
+                message:"There are some error with query"
+            }];
+            console.log(tagReport);
+        }  
+        else{
+            
+            var newTID = 0;
+            if (result[0].TID != null) {
+                newTID = result[0].TID + 1;
+            }
+            
+            console.log("TID: " + newTID);
+            
+            // Insert new TID
+            var insertTag = "INSERT INTO bkhastag(BID, TID) VALUES (" + BID + ", " + newTID + ")";
+
+            console.log(insertTag);
+            db.query(insertTag, (err2, inserted) => {
+                if (err2) {
+                    //throw err;
+                    tagReport = [{
+                        status:false,
+                        message:"Error creating Tag."
+                    }];
+                }
+
+                else{
+                    // Also add Tag Name to tag table
+                    var insertTagName = "INSERT INTO tag(TID, TagName) VALUES (" + newTID + ", '" + TagName + "')";
+
+                    console.log(insertTagName);
+                    db.query(insertTagName, (err2, inserted) => {
+                        if (err2) {
+                            //throw err;
+                            console.log(err2);
+                            tagReport = [{
+                                status:false,
+                                message:"Error creating Tag Name."
+                            }];
+                        }
+
+                        else{
+                            console.log("hello1");
+                            tagReport = [{
+                                status:true,
+                                message:"Tag Name added."
+                            }];
+                        }
+                    });
+                    console.log(tagReport);
+                    
+                    
+                    tagReport = [{
+                        status:true,
+                        message:"Tag added."
+                    }];
+                }
+            });
+            console.log(tagReport);
+        }
+    });
+    
+    
+}
 
 
 
@@ -174,9 +344,11 @@ db.connect((err) => {
     }
     console.log('Connected to database');
     
-    getHomePage();
-    loginValidation();
-    registrationValidation()
+    //getHomePage();
+    //loginValidation();
+    //registrationValidation();
+    //addBookmark();
+    addTagsToBookmark();
 });
 
 global.db = db;
