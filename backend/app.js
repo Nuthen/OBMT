@@ -644,6 +644,93 @@ app.post('/api/addBookmark', function (req,res) {
     }
 });
 
+// Returns {success: '0'} or {success: '1'}
+// All Bookmark parameters required -- BID, Title, URL, Description
+app.post('/api/editBookmark', function (req,res) {
+    var BID = req.body.BID;
+    var Title = req.body.Title;
+    var URL = req.body.URL;
+    var Priority = 1;
+    var Description = req.body.Description;
+    
+    
+    if (BID != null && (Title != null && URL != null &&  Description != null)) {
+        // new BID determined by max BID + 1 
+        //var UID = 111;
+        //var Title = "mytitle2"; 
+        //var URL = "umdearborn.edu";
+        //var Priority = 1;
+        //var Description = "My cool website2.";
+        
+        var bookmarkQuery = "SELECT * FROM `bookmark` WHERE BID = '" + BID + "'";
+        var bookmarkEditQuery = "UPDATE `bookmark` SET Title = '" + Title + "', URL = '" + URL + "', Description = '" + Description + "' WHERE BID = '" + BID + "'";
+        console.log(bookmarkEditQuery);
+
+        var bookmarkReport;
+
+        // Query to verify BID exists
+        db.query(bookmarkQuery, (error, result, fields) => {
+            if (error) {
+                bookmarkReport = [{
+                    status:false,
+                    message:"There are some error with query: bookmark Query"
+                }];
+                console.log(bookmarkReport);
+                var returnValue = {
+                    success: '0',
+                }
+                res.send(returnValue);
+            }  
+            else {
+                console.log("BID found: " + JSON.stringify(result.length));
+
+                if (result.length > 0) {
+                    // Proceed with edit
+                    
+                    // Query to find if BID already created
+                    db.query(bookmarkEditQuery, (error, results) => {
+                        if (error) {
+                            console.log(error);
+                            bookmarkReport = [{
+                                status:false,
+                                message:"There are some error with query: Bookmark Edit Query"
+                            }];
+                            var returnValue = {
+                                success: '0',
+                            }
+                            res.send(returnValue);
+                        }
+
+                        else {
+                            console.log(results);
+                            bookmarkReport = [{
+                                status:true,
+                                message:"Bookmark edit successful."
+                            }];
+                            var returnValue = {
+                                success: '1',
+                            }
+                            res.send(returnValue);
+                        }
+
+
+                        console.log(bookmarkReport);
+                    });
+                } else {
+                    // No bookmark found of this BID
+                }
+            }
+            console.log(bookmarkReport);
+        });
+    } else {
+        var returnValue = {
+            success: '0',
+        }
+        res.send(returnValue);
+        console.log("Edit bookmark failed due to no parameters to modify.");
+    }
+});
+
 // Returns {success: '1'} if bookmark deletion is successful. This only guarantees the bookmark delete itself works.
 // It does not represent if all associated tags are deleted. (But it attempts to remove them as well).
 app.post('/api/deleteBookmark', function (req,res) {
@@ -680,17 +767,33 @@ app.post('/api/deleteBookmark', function (req,res) {
                         //console.log(deleteTagKeyQuery)
                         
                         db.query(deleteTagQuery, (error, result, fields) => {
-                            bookmarkReport = [{
-                                status:false,
-                                message:"Error deleting Tag ID."
-                            }];
+                            if (error) {
+                                bookmarkReport = [{
+                                    status:false,
+                                    message:"Error deleting Tag ID."
+                                }];
+                            } else {
+                                bookmarkReport = [{
+                                    status:true,
+                                    message:"Success deleting Tag ID."
+                                }];
+                            }
+                            console.log(bookmarkReport);
                         });
                         
                         db.query(deleteTagKeyQuery, (error, result, fields) => {
-                            bookmarkReport = [{
-                                status:false,
-                                message:"Error deleting Tag ID Key."
-                            }];
+                            if (error) {
+                                bookmarkReport = [{
+                                    status:false,
+                                    message:"Error deleting Tag ID Key."
+                                }];
+                            } else {
+                                bookmarkReport = [{
+                                    status:true,
+                                    message:"Success deleting Tag ID Key."
+                                }];
+                            }
+                            console.log(bookmarkReport);
                         });
                     }
                 }
