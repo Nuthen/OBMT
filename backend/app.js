@@ -303,7 +303,6 @@ function addTagsToBookmark(){
                         }
 
                         else{
-                            console.log("hello1");
                             tagReport = [{
                                 status:true,
                                 message:"Tag Name added."
@@ -573,6 +572,81 @@ app.post('/api/addBookmark', function (req,res) {
                     }
                     console.log(bookmarkReport);
                 });
+            }
+        });
+    }
+});
+
+// Returns {success: '1'} if bookmark deletion is successful. This only guarantees the bookmark delete itself works.
+// It does not represent if all associated tags are deleted. (But it attempts to remove them as well).
+app.post('/api/deleteBookmark', function (req,res) {
+    var BID = req.body.BID;
+    if (BID == null) {
+        console.log("Null BID");
+        console.log("Delete bookmark failed due to null parameter.");
+    } else {
+        var deleteBookmarkQuery = "DELETE FROM `bookmark` WHERE BID = '" + BID + "'";
+        var tagQuery = "SELECT * FROM `bkhastag` WHERE BID = '" + BID + "'";
+        
+        var bookmarkReport;
+        
+        //console.log(tagQuery);
+        
+        // Query to find all Tag ID based on the bookmark
+        db.query(tagQuery, (error, result, fields) => {
+            if (error) {
+                bookmarkReport = [{
+                    status:false,
+                    message:"Error finding tag id."
+                }];
+                var returnValue = {
+                    success: '0',
+                }
+                res.send(returnValue);
+            } else {               
+                for (var i = 0; i < result.length; i++) {
+                    var TID = result[i].TID;
+                    
+                    if (TID != null) {
+                        var deleteTagKeyQuery = "DELETE FROM `bkhastag` WHERE TID = '" + TID + "'";
+                        var deleteTagQuery = "DELETE FROM `tag` WHERE TID = '" + TID + "'";
+                        //console.log(deleteTagKeyQuery)
+                        
+                        db.query(deleteTagQuery, (error, result, fields) => {
+                            bookmarkReport = [{
+                                status:false,
+                                message:"Error deleting Tag ID."
+                            }];
+                        });
+                        
+                        db.query(deleteTagKeyQuery, (error, result, fields) => {
+                            bookmarkReport = [{
+                                status:false,
+                                message:"Error deleting Tag ID Key."
+                            }];
+                        });
+                    }
+                }
+            }
+            
+            console.log(bookmarkReport);
+        });
+        
+        db.query(deleteBookmarkQuery, (error, result, fields) => {
+            if (error) {
+                bookmarkReport = [{
+                    status:false,
+                    message:"Error deleting bookmark."
+                }];
+                var returnValue = {
+                    success: '0',
+                }
+                res.send(returnValue);
+            } else {
+                var returnValue = {
+                    success: '1',
+                }
+                res.send(returnValue);
             }
         });
     }
