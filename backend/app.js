@@ -400,6 +400,184 @@ app.get('/api/getList', (req,res) => {
     console.log('Sent list of items');
 });
 
+
+// Requires UID parameter
+// returns result as {success='0',bookmarks={...}}
+app.get('/api/getBookmarks', function (req,res) {
+    var UID = req.body.UID;
+    
+    if (UID == null) {
+        console.log("Null UID");
+        console.log("Get bookmarks failed due to null parameter.");
+        res.send('0');
+    } else {
+        var bookmarkQuery = "SELECT * FROM `bookmark` WHERE UID = '" + UID + "'";
+        
+        // Query to get all of the user's bookmarks
+        db.query(bookmarkQuery, (err2, results) => {
+            if (err2) {
+                //throw err;
+                bookmarkReport = [{
+                    status:false,
+                    message:"Error retrieving bookmarks."
+                }];
+                res.send('0');
+            }
+
+            else{
+                bookmarkReport = [{
+                    status:true,
+                    message:"Bookmarks retrieved."
+                }];
+                
+                var returnValue = {
+                    success: '1',
+                    bookmarks: results
+                }
+                
+                res.json(returnValue);
+            }
+        });
+    }
+});
+
+// Returns {success: '0'} or {success: '1'}
+app.post('/api/addBookmark', function (req,res) {
+    var UID = req.body.UID;
+    var Title = req.body.Title;
+    var URL = req.body.URL;
+    var Priority = 1;
+    var Description = req.body.Description;
+    
+    if (UID == null) {
+        console.log("Null UID");
+    }
+    if (Title == null) {
+        console.log("Null Title");
+    }
+    if (URL == null) {
+        console.log("Null URL");
+    }
+    if (Priority == null) {
+        console.log("Null Priority");
+    }
+    if (Description == null) {
+        console.log("Null Description");
+    }
+    
+    if (UID == null || Title == null || URL == null || Priority == null || Description == null) {
+        var returnValue = {
+            success: '0',
+        }
+        res.send(returnValue);
+        console.log("Add bookmark failed due to null parameter.");
+    } else {
+        // new BID determined by max BID + 1 
+        //var UID = 111;
+        //var Title = "mytitle2"; 
+        //var URL = "umdearborn.edu";
+        //var Priority = 1;
+        //var Description = "My cool website2.";
+
+        var dateObj = new Date();
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+
+        var newdate = year + "/" + month + "/" + day;
+
+        var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
+        var maxQuery = "SELECT MAX(BID) as BID FROM `bookmark`";
+
+        var bookmarkReport;
+
+        // Query to find new BID
+        db.query(maxQuery, (error, result, fields) => {
+            if (error) {
+                //res.redirect('/');
+                bookmarkReport = [{
+                    status:false,
+                    message:"There are some error with query"
+                }];
+                console.log(bookmarkReport);
+                var returnValue = {
+                    success: '0',
+                }
+                res.send(returnValue);
+            }  
+            else{
+                console.log("BID: " + JSON.stringify(result[0].BID));
+
+                var newBID = 0;
+
+                if (result[0].BID != null) {            
+                    newBID = result[0].BID + 1;
+                }
+
+                // Query to find if BID already created
+                db.query(bookmarkQuery, (error, results) => {
+                    if (error) {
+                        //res.redirect('/');
+                        bookmarkReport = [{
+                            status:false,
+                            message:"There are some error with query"
+                        }];
+                        var returnValue = {
+                            success: '0',
+                        }
+                        res.send(returnValue);
+                    }
+
+                    else if(results.length >0){
+                        console.log(results);
+                        bookmarkReport = [{
+                            status:false,
+                            message:"Bookmark is already created."
+                        }];
+                        var returnValue = {
+                            success: '0',
+                        }
+                        res.send(returnValue);
+                    }
+
+                    else{
+                        var insertBookmark = "INSERT INTO bookmark(BID, UID, Title, URL, Priority, Description, Date) VALUES (" + newBID + ", " + UID + ", '" + Title + "', '" + URL + "', '" + Priority + "', '" + Description + "', " + newdate + ")";
+
+                        console.log(insertBookmark);
+                        db.query(insertBookmark, (err2, inserted) => {
+                            if (err2) {
+                                //throw err;
+                                bookmarkReport = [{
+                                    status:false,
+                                    message:"Error creating bookmark."
+                                }];
+                                var returnValue = {
+                                    success: '0',
+                                }
+                                res.send(returnValue);
+                            }
+
+                            else{
+                                bookmarkReport = [{
+                                    status:true,
+                                    message:"Bookmark added."
+                                }];
+                                var returnValue = {
+                                    success: '1',
+                                }
+                                res.send(returnValue);
+                            }
+
+
+                        });
+                    }
+                    console.log(bookmarkReport);
+                });
+            }
+        });
+    }
+});
+
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
