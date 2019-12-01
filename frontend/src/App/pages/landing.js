@@ -1,6 +1,6 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
-import {doSomething} from '../components/apiCalls'
+import { doSomething } from '../components/apiCalls'
 
 
 const converted = {
@@ -80,7 +80,7 @@ export function Landing() {
     const [isRegModalOpen, setRegModal] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    
+
     return (
         <ModalProvider>
             <div className="body" style={converted.body}>
@@ -92,7 +92,7 @@ export function Landing() {
                         <div className="detail-circle" style={converted[".detail-circle"]}>detail2</div>
                         <div className="access-container" style={converted[".access-container"]}>
 
-                            
+
                             {/* These next sections are the log in and register options */}
 
                             <div className="access-box" style={converted[".access-box"]}>
@@ -121,7 +121,7 @@ export function Landing() {
                                     </Modal>
                                 )}
                             </div>
-                            
+
 
                         </div>
                         <div className="detail-circle" style={converted[".detail-circle"]}>detail3</div>
