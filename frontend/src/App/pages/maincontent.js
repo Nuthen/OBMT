@@ -72,13 +72,7 @@ const converted = {
         justifyContent: "space-around",
         alignItems: "center"
     },
-    ".bookmark-display": {
-        backgroundColor: "#F1F9FF",
-        borderRadius: "25px",
-        width: "45%",
-        height: "90%",
-        border: "solid"
-    }
+    
 };
 
 
@@ -127,11 +121,9 @@ export function Main() {
                     </div>
                 </div>
                 <div className="content-main" style={converted[".content-main"]}>
-                    <div className="bookmark-display" style={converted[".bookmark-display"]}>
                         {/* The function: CommentBox(arg) takes a list of objects in the form described in the comment above this export function */}
                         {/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */}
-                        <div style={{ display: 'flex', width: 'fit', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>{CommentBox(bookmarksList)}</div>
-                    </div>
+                        <div style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start'}}>{CommentBox(bookmarksList)}</div>
                 </div>
             </div>
         </ModalProvider>
