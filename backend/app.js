@@ -49,7 +49,7 @@ app.post('/api/login', function (req,res) {
             
             loginReport = [{
                 status:false,
-                message:"There was an error with the query"
+                message:"There is an error with the query"
             }];
         }
     
@@ -108,12 +108,13 @@ app.post('/api/login', function (req,res) {
 });
     
 //app.post('/api/register', (req,res) => {
-function registrationValidation(){
+//function registrationValidation(){
+app.post('/api/CallRegisterLogin', function (req,res) {
     //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName, and maybe Admin?
-    var Username = "sam"; 
-    var Password = "secret";
-    var FName = "sammy";
-    var LName = "jammy";
+    var Username = req.body.username; 
+    var Password = req.body.password;
+    var FName = req.body.firstname;
+    var LName = req.body.lastname;
     
     var dateObj = new Date();
     var month = dateObj.getUTCMonth() + 1; //months from 1-12
@@ -126,6 +127,7 @@ function registrationValidation(){
     //To be returned to front end. Contains regisration status and message
     var registerReport;
     var UIDReport;
+    var returnValue;
     var UIDDeterminer = 0;
     var userCount = 0;
     
@@ -138,9 +140,14 @@ function registrationValidation(){
             //res.redirect('/');
             UIDReport = [{
                 status:false,
-                message:"There are some error with query for UID"
+                message:"There is an error with the query for UID"
             //status = false;
-            //console.log('There are some error with query');
+            //console.log('There is an error with the query');
+            }];
+            
+            returnValue = [{
+                success: '0',
+                message:"Error with query"
             }];
         }
     
@@ -153,6 +160,11 @@ function registrationValidation(){
                 message:"Ids found."
             }];
             
+            returnValue = [{
+                success: '1',
+                message:"Id has been found"
+            }];
+            
             UIDDeterminer = 1;
             userCount = UIDResults.length;
             UID = (UIDResults[userCount - 1].UID) + 1;
@@ -163,6 +175,11 @@ function registrationValidation(){
             UIDReport = [{
                 status:true,
                 message:"No current Ids found."
+            }];
+            
+            returnValue = [{
+                success: '1',
+                message:"No Ids found"
             }];
             
             UIDDeterminer = 1;
@@ -180,9 +197,14 @@ function registrationValidation(){
                     //res.redirect('/');
                     registerReport = [{
                         status:false,
-                        message:"There are some error with query"
+                        message:"There is an error with the query"
                     //status = false;
-                    //console.log('There are some error with query');
+                    //console.log('There is an error with the query');
+                    }];
+                    
+                    returnValue = [{
+                        success: '0',
+                        message:"Query error"
                     }];
                 }
             
@@ -194,6 +216,11 @@ function registrationValidation(){
                     registerReport = [{
                         status:false,
                         message:"User name is already taken. Please enter another username."
+                    }];
+                    
+                    returnValue = [{
+                        success: '0',
+                        message:"Username is already taken"
                     }];
                 }
                     
@@ -212,12 +239,22 @@ function registrationValidation(){
                                 status:false,
                                 message:"Error registering."
                             }];
+                            
+                            returnValue = [{
+                                success: '0',
+                                message:"Error registering"
+                            }];
                         }
                      
                         //Report user registration success
                         else{
                             registerReport = [{
                                 status:true,
+                                message:"Thank you! You are successfully registered."
+                            }];
+                            
+                            returnValue = [{
+                                success: '1',
                                 message:"Thank you! You are successfully registered."
                             }];
                         }
@@ -232,7 +269,7 @@ function registrationValidation(){
     //Return results to front-end
     //ADD
     //res.json(registerReport);
-}
+});
 
 function addBookmark(){
     var UID = 111;
@@ -262,7 +299,7 @@ function addBookmark(){
             //res.redirect('/');
             bookmarkReport = [{
                 status:false,
-                message:"There are some error with query"
+                message:"There is an error with the query"
             }];
             console.log(bookmarkReport);
         }  
@@ -281,7 +318,7 @@ function addBookmark(){
                     //res.redirect('/');
                     bookmarkReport = [{
                         status:false,
-                        message:"There are some error with query"
+                        message:"There is an error with the query"
                     }];
                 }
 
@@ -340,7 +377,7 @@ function addTagsToBookmark(){
             //res.redirect('/');
             tagReport = [{
                 status:false,
-                message:"There are some error with query"
+                message:"There is an error with the query"
             }];
             console.log(tagReport);
         }  
@@ -422,7 +459,7 @@ db.connect((err) => {
     
     getHomePage();
     //loginValidation();
-    registrationValidation();
+    //registrationValidation();
 });
 
 global.db = db;
@@ -585,7 +622,7 @@ app.post('/api/addBookmark', function (req,res) {
                 //res.redirect('/');
                 bookmarkReport = [{
                     status:false,
-                    message:"There are some error with query"
+                    message:"There is an error with the query"
                 }];
                 console.log(bookmarkReport);
                 var returnValue = {
@@ -608,7 +645,7 @@ app.post('/api/addBookmark', function (req,res) {
                         //res.redirect('/');
                         bookmarkReport = [{
                             status:false,
-                            message:"There are some error with query"
+                            message:"There is an error with the query"
                         }];
                         var returnValue = {
                             success: '0',
@@ -695,7 +732,7 @@ app.post('/api/editBookmark', function (req,res) {
             if (error) {
                 bookmarkReport = [{
                     status:false,
-                    message:"There are some error with query: bookmark Query"
+                    message:"There is an error with the query: bookmark Query"
                 }];
                 console.log(bookmarkReport);
                 var returnValue = {
@@ -715,7 +752,7 @@ app.post('/api/editBookmark', function (req,res) {
                             console.log(error);
                             bookmarkReport = [{
                                 status:false,
-                                message:"There are some error with query: Bookmark Edit Query"
+                                message:"There is an error with the query: Bookmark Edit Query"
                             }];
                             var returnValue = {
                                 success: '0',
