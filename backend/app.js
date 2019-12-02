@@ -26,12 +26,14 @@ const app = express();
     }
 //};
 //app.post('/api/login', (req,res) => {
-function loginValidation(){
+//function loginValidation(){
+app.post('/api/login', function (req,res) {
     //TEST DATA
-    var userName = 'Jo';
-    var password = '1234';
+    var userName = req.body.username;
+    var password = req.body.password;
     
     //Return to front end. Contains login status and message
+    var returnValue;
     var loginReport;
     
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + userName + "'";
@@ -40,11 +42,14 @@ function loginValidation(){
         //Report query error
         if (error) {
             //res.redirect('/');
+            returnValue = {
+                success: '0',
+                message:"Error with query"
+            };
+            
             loginReport = [{
                 status:false,
-                message:"There are some error with query"
-            //status = false;
-            //console.log('There are some error with query');
+                message:"There was an error with the query"
             }];
         }
     
@@ -56,6 +61,11 @@ function loginValidation(){
                     status:true,
                     message:"Successfully authenticated"
                 }];
+                
+                returnValue = [{
+                    success: '1',
+                    message: "You have successfully logged in!"
+                }];
             }
                 
             else{
@@ -64,6 +74,11 @@ function loginValidation(){
                     status:false,
                     message:"Username and password does not match"
                 }]; 
+                
+                returnValue = [{
+                    success: '0',
+                    message:"Username and password does not match"
+                }];
             }
         }
         
@@ -74,16 +89,23 @@ function loginValidation(){
                 status:false,
                 message:"Username does not exits"
             }];
+            
+            returnValue = [{
+                success: '0',
+                message:"Username does not exist"
+            }];
         }
         
         //Return results to front-end
         console.log(loginReport);
+        console.log(returnValue);
+        res.send(returnValue);
     });
     
     //Return results to front-end
     //ADD
     //res.json(loginReport);
-}
+});
     
 //app.post('/api/register', (req,res) => {
 function registrationValidation(){
@@ -399,7 +421,7 @@ db.connect((err) => {
     console.log('Connected to database');
     
     getHomePage();
-    loginValidation();
+    //loginValidation();
     registrationValidation();
 });
 
