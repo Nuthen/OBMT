@@ -469,7 +469,7 @@ app.get('/api/getList', (req,res) => {
 
 // Requires UID parameter
 // returns result as {success='0',bookmarks={...}}
-app.get('/api/getBookmarks', function (req,res) {
+app.post('/api/getBookmarks', function (req,res) {
     var UID = req.body.UID;
     
     if (UID == null) {
