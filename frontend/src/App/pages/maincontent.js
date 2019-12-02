@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ModalProvider, Modal } from '../components/loginModal';
 import { CommentBox, Bookmark } from '../components/scrollingBox';
-import { CallSearch } from '../components/apiCalls';
+import { addBookmark,getBookmarks } from '../components/apiCalls';
 
 const converted = {
     body: { margin: "0" },
@@ -107,15 +107,24 @@ export function Main() {
                         {isBookMarkModalOpen && (
                             <Modal onClose={() => setBookMarkModal(false)} style={converted[".bookmark-modal"]} >
                                 <p>title</p>
-                                <input type="text" name="title" />
+                                <input type="text" name="title" id='title'/>
                                 <p>url</p>
-                                <input type="text" name="url" />
+                                <input type="text" name="url" id='url'/>
                                 <p>priority</p>
-                                <input type="text" name="priority" />
+                                <input type="text" name="priority" id='priority'/>
                                 <p>description</p>
-                                <input type="text" name="description" />
+                                <input type="text" name="description" id="description" />
                                 <p>tags</p>
-                                <input type="text" name="tags" />
+                                <input type="text" name="tags" id="tags"/>
+                                <button name="Addbookmark" onClick={() => addBookmark(
+                                    0,
+                                    document.getElementById("title").value,
+                                    document.getElementById("url").value,
+                                    document.getElementById("description").value,
+                                    document.getElementById("tags").value,
+                                    )
+                                    
+                                }>Add bookmark</button>
                             </Modal>
                         )}
                     </div>
@@ -125,6 +134,9 @@ export function Main() {
                         {/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */}
                         <div style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start'}}>{CommentBox(bookmarksList)}</div>
                 </div>
+                {/* <button name="loadBookmarks" onClick={() => getBookmarks()}>Load bookmarks</button> */}
+                {/* <button name="Addbookmark" onClick={() => addBookmark()}>Add bookmark</button> */}
+                
             </div>
         </ModalProvider>
 
