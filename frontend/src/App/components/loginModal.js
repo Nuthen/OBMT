@@ -1,7 +1,6 @@
 import React, { useRef, useContext, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { keyframes } from "styled-components";
-import { Link } from 'react-router-dom';
 
 const Context = React.createContext();
 
@@ -29,7 +28,6 @@ export function Modal({ onClose, children, ...props }) {
         <Overlay>
           <Dialog {...props}>
             {children}
-            <Link to={'./maincontent'}><button onClick={onClose}>Go</button></Link>
             <button onClick={onClose}>Exit</button>
           </Dialog>
         </Overlay>,
