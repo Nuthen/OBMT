@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
 import { doSomething } from '../components/apiCalls'
-
+import { Link } from 'react-router-dom';
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -103,6 +103,7 @@ export function Landing() {
                                         <input type="text" name="name" />
                                         <p>password</p>
                                         <input type="text" name="password" />
+                                        <Link to={'./maincontent'}><button>Go</button></Link>
                                         <button name="New" onClick={() => doSomething()}>NEW</button>
                                     </Modal>
                                 )}
