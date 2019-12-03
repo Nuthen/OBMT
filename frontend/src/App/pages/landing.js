@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
-import { doSomething } from '../components/apiCalls'
+import { doSomething, CallRegisterLogin } from '../components/apiCalls'
 import { Link } from 'react-router-dom';
 
 const converted = {
@@ -114,11 +114,16 @@ export function Landing() {
                                 {isRegModalOpen && (
                                     <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
                                         <p>Username</p>
-                                        <input type="text" name="name" />
+                                        <input type="text" name="name"/>
                                         <p>password</p>
                                         <input type="text" name="password" />
                                         <p>dob</p>
                                         <input type="text" name="dob" />
+                                        <br/>
+                                        <div id="register_response"></div>
+                                        <button name="registerz" onClick={() => CallRegisterLogin(
+                                            'dum1','dum2','dum3','dum4'
+                                        )}>plef</button>
                                     </Modal>
                                 )}
                             </div>
