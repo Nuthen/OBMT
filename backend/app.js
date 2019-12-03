@@ -245,7 +245,7 @@ function loginValidation(){
     
 //app.post('/api/register', (req,res) => {
 //function registrationValidation(){
-app.post('/api/register', function (req,res) {
+app.post('/api/CallRegisterLogin', function (req,res) {
     //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName, and maybe Admin?
     var Username = req.body.username; 
     var Password = req.body.password;
