@@ -6,6 +6,8 @@ const path = require('path');
 
 const app = express();
 
+const scrape = require('scrape-metadata')
+
 //const port = 3306;
 
 //module.exports = {
@@ -302,12 +304,46 @@ function addBookmark(){
     
 }
 
-function addTagsToBookmark(){
-    var BID = 112;
-    // new BID determined by max BID + 1 
-    
-    var TagName = 'Ceesharp';
-    //var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
+
+function scrapeTags(BID, URL) {
+    scrape(URL, (err, meta) => {
+        if (meta != null) {
+            var str = "";
+            if (meta.title != null) {
+                str =+ meta.title;
+            }
+            if (meta.description != null) {
+                str =+ " " + meta.description;
+            } else if (meta.twitterDescription != null) {
+                str =+ " " + meta.twitterDescription;
+            }
+            console.log("META: " + str);
+            var splits = meta.title.split(/[.,\/ -!]/);
+            for (var i = 0; i < splits.length; i++) {
+                console.log("Word:" + splits[i]);
+                if (splits[i] == "") {
+                    console.log("empty!");
+                } else if (splits[i] == " ") {
+                    console.log("space!");
+                }
+            }
+
+            let unique = [...new Set(splits)]; // put it into a set to avoid duplicates
+            console.log(unique)
+
+            /*function addEachTag(tag) {
+                console.log("(1)BID: " + BID + ", tag: " + tag);
+                addTagToBookmark(BID, tag)
+            }
+
+            unique.forEach(addEachTag);*/
+            addNewTags(BID, unique);
+        }
+    })
+}
+
+function addNewTags(BID, Tags) {
+    //console.log("(2)BID: " + BID + ", tag: " + TagName); 
     var maxQuery = "SELECT MAX(TID) as TID FROM `bkhastag`";
     
     var tagReport;
@@ -331,55 +367,69 @@ function addTagsToBookmark(){
             
             console.log("TID: " + newTID);
             
-            // Insert new TID
-            var insertTag = "INSERT INTO bkhastag(BID, TID) VALUES (" + BID + ", " + newTID + ")";
+            function addEachTag(tag) {
+                console.log("(1)TID: " + newTID + ", tag: " + tag);
+                addTagToBookmark(BID, newTID, tag)
+                
+                newTID += 1;
+            }
 
-            console.log(insertTag);
-            db.query(insertTag, (err2, inserted) => {
+            Tags.forEach(addEachTag);
+        }
+        console.log(tagReport);
+    });
+}
+
+function addTagToBookmark(BID, TID, TagName) {   
+    console.log("TID: " + TID);
+            
+    // Insert new TID
+    var insertTag = "INSERT INTO bkhastag(BID, TID) VALUES (" + BID + ", " + TID + ")";
+
+    console.log(insertTag);
+    db.query(insertTag, (err2, inserted) => {
+        if (err2) {
+            //throw err;
+            tagReport = [{
+                status:false,
+                message:"Error creating Tag."
+            }];
+            console.log(tagReport);
+        }
+
+        else{
+            // Also add Tag Name to tag table
+            var insertTagName = "INSERT INTO tag(TID, TagName) VALUES (" + TID + ", '" + TagName + "')";
+
+            console.log(insertTagName);
+            db.query(insertTagName, (err2, inserted) => {
                 if (err2) {
                     //throw err;
+                    console.log(err2);
                     tagReport = [{
                         status:false,
-                        message:"Error creating Tag."
+                        message:"Error creating Tag Name."
                     }];
+                    console.log(tagReport);
                 }
 
                 else{
-                    // Also add Tag Name to tag table
-                    var insertTagName = "INSERT INTO tag(TID, TagName) VALUES (" + newTID + ", '" + TagName + "')";
-
-                    console.log(insertTagName);
-                    db.query(insertTagName, (err2, inserted) => {
-                        if (err2) {
-                            //throw err;
-                            console.log(err2);
-                            tagReport = [{
-                                status:false,
-                                message:"Error creating Tag Name."
-                            }];
-                        }
-
-                        else{
-                            tagReport = [{
-                                status:true,
-                                message:"Tag Name added."
-                            }];
-                        }
-                    });
-                    console.log(tagReport);
-                    
-                    
                     tagReport = [{
                         status:true,
-                        message:"Tag added."
+                        message:"Tag Name added."
                     }];
+                    console.log(tagReport);
                 }
             });
+                    
+                    
+            tagReport = [{
+                status:true,
+                message:"Tag added."
+            }];
             console.log(tagReport);
         }
     });
-    
-    
 }
 
 // create connection to database
@@ -579,6 +629,8 @@ app.post('/api/addBookmark', function (req,res) {
                 if (result[0].BID != null) {            
                     newBID = result[0].BID + 1;
                 }
+        
+                scrapeTags(newBID, URL);
 
                 // Query to find if BID already created
                 db.query(bookmarkQuery, (error, results) => {
