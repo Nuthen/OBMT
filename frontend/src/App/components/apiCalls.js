@@ -35,11 +35,12 @@ export function CallLogin(name, pw) {
 
 // REGISTER CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
-export function CallRegisterLogin(name, pw, dob) {
+export function CallRegisterLogin(name, pw, fName, lName) {
     axios.post(`/api/register`, {
         username: name,
         password: pw,
-        birthdate: dob
+        fname: fName,
+        lname: lName
     })
         .then(res => {
             if (res.data[0] == true) {
