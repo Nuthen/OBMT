@@ -1,6 +1,7 @@
 import { builtinModules } from 'module';
 import axios from 'axios';
-
+import { CommentBox, Bookmark } from '../components/scrollingBox';
+import React, { useCallback } from 'react'
 
 // PROTOTYPE FOR BACKEND CALL
 export function doSomething() {
@@ -115,7 +116,7 @@ export function CallSearch(searchString) {
         })
 }
 
-export function addBookmark(uid,title,url,description,tags) {
+export function addBookmark(uid, title, url, description, tags) {
     axios.post(`/api/addBookmark`, {
         UID: uid,
         Title: title,
@@ -135,15 +136,27 @@ export function addBookmark(uid,title,url,description,tags) {
 
 
 export function getBookmarks() {
-    axios.post(`/api/getBookmarks`, {
-        UID:0
-    })
-        .then(res => {
-            if (res.data.success == 1) {
-                console.log('it worked');
-            }
-            else {
-                console.log('it didn\'t work');
-            }
+    return new Promise(function (resolve, reject) {
+        axios.post(`/api/getBookmarks`, {
+            UID: 0
         })
+            .then(res => {
+                //response is the JSON object returned
+                if (res.data.success == 1) {
+                    //obj is just the bookmark data
+                    var obj = res.data.bookmarks;
+                    //commentBox returns a div we want to render
+                    var tbl = CommentBox(obj);
+                    //resolve ''updates'' promise in maincontent.js
+                    //updates is probably the wrong word.  it gives
+                    //promise a value.
+                    return resolve(tbl);
+                }
+                else {
+                    reject('Error loading table');
+                }
+        })
+    });
 }
+{/* The function: CommentBox(arg) takes a list of objects in the form described in the comment above this export function */}
+{/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */}
