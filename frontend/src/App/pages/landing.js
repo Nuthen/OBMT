@@ -114,16 +114,18 @@ export function Landing() {
                                 {isRegModalOpen && (
                                     <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
                                         <p>Username</p>
-                                        <input type="text" name="name"/>
+                                        <input type="text" name="uname"/>
                                         <p>password</p>
                                         <input type="text" name="password" />
-                                        <p>dob</p>
-                                        <input type="text" name="dob" />
+                                        <p>fname</p>
+                                        <input type="text" name="fname" />
+                                        <p>lname</p>
+                                        <input type="text" name="lname" />
                                         <br/>
                                         <div id="register_response"></div>
                                         <button name="registerz" onClick={() => CallRegisterLogin(
                                             'dum1','dum2','dum3','dum4'
-                                        )}>plef</button>
+                                        )}>Test Register without filling fields</button>
                                     </Modal>
                                 )}
                             </div>
