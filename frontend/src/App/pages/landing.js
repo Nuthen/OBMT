@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
-import { doSomething, CallRegisterLogin } from '../components/apiCalls'
+import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
 import { Link } from 'react-router-dom';
 
 const converted = {
@@ -103,8 +103,8 @@ export function Landing() {
                                         <input type="text" name="name" />
                                         <p>password</p>
                                         <input type="text" name="password" />
-                                        <Link to={'./maincontent'}><button>Go</button></Link>
-                                        <button name="New" onClick={() => doSomething()}>NEW</button>
+                                        <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link>
+                                        <button name="New" onClick={() => CallLogin('sam','secret')}>Login</button>
                                     </Modal>
                                 )}
                             </div>
