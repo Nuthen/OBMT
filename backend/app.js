@@ -34,8 +34,14 @@ app.post('/api/login', function (req,res) {
     var uid = 'z';
     
     //Return to front end. Contains login status and message
-    var returnValue;
-    var loginReport;
+    var returnValue = [{
+        success: '0',
+        message:'0'
+    }];
+    var loginReport= [{
+        status:false,
+        message:"No action"
+    }];
     
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + userName + "'";
     
@@ -50,7 +56,7 @@ app.post('/api/login', function (req,res) {
             
             returnValue = [{
                 success: '0',
-                //message:"Error with query"
+                message:'0'
             }];
         }
     
@@ -93,7 +99,7 @@ app.post('/api/login', function (req,res) {
                     
                     returnValue = [{
                         success: '0',
-                        //message:"Username and password does not match"
+                        message: '0'
                     }];
                 }
             }
@@ -106,7 +112,7 @@ app.post('/api/login', function (req,res) {
                 
                 returnValue = [{
                     success: '0',
-                    //message:"Username and password does not match"
+                    message: '0'
                 }];
             }
         }
@@ -121,32 +127,41 @@ app.post('/api/login', function (req,res) {
             
             returnValue = [{
                 success: '0',
-                //message:"Username does not exist"
+                message: '0'
             }];
+            //res.send(returnValue);
         }
         
         //Return results to front-end
         console.log(loginReport);
         console.log(returnValue);
-        res.send(returnValue);
+        res.send(returnValue); 
     });
-    
+    //console.log('out');
+    //console.log(loginReport);
+    //console.log(returnValue);
     //Return results to front-end
-    //ADD
-    //res.json(loginReport);
+    //ADD??
+    //res.send(returnValue);
 });
 
 //FOR TESTING REMOVE
 function loginValidation(){
 //app.post('/api/login', function (req,res) {
     //TEST DATA
-    var userName = 'Jo';
-    var password = '12345';
+    var userName = 'smarty';
+    var password = 'pants';
     var uid = 'z';
     
     //Return to front end. Contains login status and message
-    var returnValue;
-    var loginReport;
+    var returnValue = [{
+        success: '0',
+        message:'0'
+    }];
+    var loginReport= [{
+        status:false,
+        message:"No action"
+    }];
     
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + userName + "'";
     
@@ -161,7 +176,7 @@ function loginValidation(){
             
             returnValue = [{
                 success: '0',
-                //message:"Error with query"
+                message:'0'
             }];
         }
     
@@ -179,7 +194,7 @@ function loginValidation(){
             if(matchCase == '1'){
                 if(password==userResults[0].Password){
                     //res.redirect('/');
-                    //REMOVE
+
                     uid = userResults[0].UID;
                     console.log("UID logged in as");
                     console.log(uid);
@@ -204,7 +219,7 @@ function loginValidation(){
                     
                     returnValue = [{
                         success: '0',
-                        //message:"Username and password does not match"
+                        message: '0'
                     }];
                 }
             }
@@ -217,12 +232,12 @@ function loginValidation(){
                 
                 returnValue = [{
                     success: '0',
-                    //message:"Username and password does not match"
+                    message: '0'
                 }];
             }
         }
         
-        //Report nonexisting user
+        //Report nonexistent user
         else{
             //res.redirect('/');
             loginReport = [{
@@ -232,17 +247,25 @@ function loginValidation(){
             
             returnValue = [{
                 success: '0',
-                //message:"Username does not exist"
+                message: '0'
             }];
+            //res.send(returnValue);
         }
+        console.log('in');
         
         //Return results to front-end
         console.log(loginReport);
         console.log(returnValue);
-        //res.send(returnValue);
+        
     });
+    //console.log('out');
+    //console.log(loginReport);
+    //console.log(returnValue);
+    //Return results to front-end
+    //ADD??
+    //res.send(returnValue);
 }
-    
+
 //app.post('/api/register', (req,res) => {
 //function registrationValidation(){
 app.post('/api/CallRegisterLogin', function (req,res) {
@@ -275,7 +298,7 @@ app.post('/api/CallRegisterLogin', function (req,res) {
     
     returnValue = [{
         success: '0',
-        //message:"Error with query"
+        message:'0'
     }];
     
     db.query(UIDQuery, (errorA, UIDResults) => {
@@ -330,8 +353,10 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                     
                     returnValue = [{
                         success: '0',
-                        //message:"Query error"
+                        message:'0'
                     }];
+                    console.log(returnValue);
+                    res.send(returnValue);
                 }
             
                 //Report username already exists
@@ -343,8 +368,10 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                     
                     returnValue = [{
                         success: '0',
-                        //message:"Username is already taken"
+                        message:'0'
                     }];
+                    console.log(returnValue);
+                    res.send(returnValue);
                 }
                     
                 //Insert new user
@@ -365,8 +392,10 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                             
                             returnValue = [{
                                 success: '0',
-                                //message:"Error registering"
+                                message:'0'
                             }];
+                            console.log(returnValue);
+                            res.send(returnValue);
                         }
                      
                         //Report user registration success
@@ -380,20 +409,23 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                                 success: '1',
                                 message:UID
                             }];
+                            //console.log('Return registration report');
+                            //console.log(registerReport);
+                            console.log(returnValue);
+                            res.send(returnValue);
                         }
                     });
                 }
             });
         }
         
-        console.log(registerReport);
-        console.log('Return registration result');
-        console.log(returnValue);
+        //console.log('Return registration report');
+        //console.log(registerReport);
+        //console.log('Return registration result');
+        //console.log(returnValue);
     });
-    
-    //Return results to front-end
-    //ADD
-    //res.json(registerReport);
+     //Return results to front-end
+    //res.json(returnValue);
 });
 
 //REMOVE TESTING 
@@ -419,7 +451,7 @@ function registrationValidation(){
     var UIDReport;
     var returnValue = [{
         success: '0',
-        //message:"Error with query"
+        message:'0'
     }];
     var UIDDeterminer = 0;
     var userCount = 0;
@@ -437,8 +469,10 @@ function registrationValidation(){
             
             returnValue = [{
                 success: '0',
-                //message:"Error with query"
+                message:'0'
             }];
+            console.log('Return registration result'); 
+            console.log(returnValue);
         }
     
         //Report ids found
@@ -464,7 +498,7 @@ function registrationValidation(){
         else{
             UIDReport = [{
                 status:true,
-                message:"No current Ids found."
+                message:"No action"
             }];
             
             UIDDeterminer = 1;
@@ -483,8 +517,10 @@ function registrationValidation(){
                     
                     returnValue = [{
                         success: '0',
-                        //message:"Query error"
+                        message:'0'
                     }];
+                    console.log('Return registration query error result'); 
+                    console.log(returnValue);
                 }
             
                 //Report username already exists
@@ -496,8 +532,10 @@ function registrationValidation(){
                     
                     returnValue = [{
                         success: '0',
-                        //message:"Username is already taken"
+                        message:'0'
                     }];
+                    console.log('Return registration user name taken result'); 
+                    console.log(returnValue);
                 }
                     
                 //Insert new user
@@ -518,8 +556,9 @@ function registrationValidation(){
                             
                             returnValue = [{
                                 success: '0',
-                                //message:"Error registering"
+                                message:'0'
                             }];
+                            console.log('Return registration error registering result'); console.log(returnValue);
                         }
                      
                         //Report user registration success
@@ -533,15 +572,20 @@ function registrationValidation(){
                                 success: '1',
                                 message:UID
                             }];
+                            console.log('Return successful registration registration result'); console.log(returnValue);
+                            
+                            //console.log('Return registration result');
+                //console.log(returnValue);
                         }
-                        console.log(registerReport);
+                        //console.log(registerReport);
                     });
                 }
-            });
-            
-            //console.log(registerReport);
-            console.log('Return registration result');
-            console.log(returnValue);
+                
+                //console.log('Return registration report');
+                //console.log(registerReport);
+                //console.log('Return registration result');
+                //console.log(returnValue);
+            }); 
         } 
     });
 }
