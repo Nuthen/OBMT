@@ -25,125 +25,6 @@ function getHomePage() {
     });
 }
 //};
-//app.post('/api/login', (req,res) => {
-//function loginValidation(){
-app.post('/api/login', function (req,res) {
-    //TEST DATA
-    var userName = req.body.username;
-    var password = req.body.password;
-    var uid = 'z';
-    
-    //Return to front end. Contains login status and message
-    var returnValue = [{
-        success: '0',
-        message:'0'
-    }];
-    var loginReport= [{
-        status:false,
-        message:"No action"
-    }];
-    
-    var userQuery = "SELECT * FROM `user` WHERE Username = '" + userName + "'";
-    
-    db.query(userQuery, (error, userResults) => {
-        //Report query error
-        if (error) {
-            //res.redirect('/');
-            loginReport = [{
-                status:false,
-                message:"There is an error with the query"
-            }];
-            
-            returnValue = [{
-                success: '0',
-                message:'0'
-            }];
-        }
-    
-        //Check user input password against database information
-        else if(userResults.length >0){
-            
-            //Check username for matching letter case
-            var dbName = userResults[0].Username;
-    
-            var matchCase = '0';
-            if (userName === dbName){
-                matchCase = '1';
-            }
-            
-            if(matchCase == '1'){
-                if(password==userResults[0].Password){
-                    //res.redirect('/');
-
-                    uid = userResults[0].UID;
-                    console.log("UID logged in as");
-                    console.log(uid);
-                    
-                    loginReport = [{
-                        status:true,
-                        message:"Successfully authenticated"
-                    }];
-                    
-                    returnValue = [{
-                        success: '1',
-                        message: uid
-                    }];
-                }
-                    
-                else{
-                    //res.redirect('/');
-                    loginReport = [{
-                        status:false,
-                        message:"Username and password does not match"
-                    }]; 
-                    
-                    returnValue = [{
-                        success: '0',
-                        message: '0'
-                    }];
-                }
-            }
-            
-            else{
-                loginReport = [{
-                    status:false,
-                    message:"Username and password does not match"
-                }]; 
-                
-                returnValue = [{
-                    success: '0',
-                    message: '0'
-                }];
-            }
-        }
-        
-        //Report nonexistent user
-        else{
-            //res.redirect('/');
-            loginReport = [{
-                status:false,
-                message:"Username does not exits"
-            }];
-            
-            returnValue = [{
-                success: '0',
-                message: '0'
-            }];
-            //res.send(returnValue);
-        }
-        
-        //Return results to front-end
-        console.log(loginReport);
-        console.log(returnValue);
-        res.send(returnValue); 
-    });
-    //console.log('out');
-    //console.log(loginReport);
-    //console.log(returnValue);
-    //Return results to front-end
-    //ADD??
-    //res.send(returnValue);
-});
 
 //FOR TESTING REMOVE
 function loginValidation(){
@@ -265,168 +146,6 @@ function loginValidation(){
     //ADD??
     //res.send(returnValue);
 }
-
-//app.post('/api/register', (req,res) => {
-//function registrationValidation(){
-app.post('/api/CallRegisterLogin', function (req,res) {
-    //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName, and maybe Admin?
-    var Username = req.body.username; 
-    var Password = req.body.password;
-    var FName = req.body.firstname;
-    var LName = req.body.lastname;
-    
-    var dateObj = new Date();
-    var month = dateObj.getUTCMonth() + 1; //months from 1-12
-    var day = dateObj.getUTCDate();
-    var year = dateObj.getUTCFullYear();
-    var newdate = year + "/" + month + "/" + day;
-    
-    var Admin = false;
-    
-    //To be returned to front end. Contains registration status and message
-    var registerReport= [{
-        status:false,
-        message:"No actions done"
-    }];
-    var UIDReport;
-    var returnValue;
-    var UIDDeterminer = 0;
-    var userCount = 0;
-    
-    var UIDQuery = "SELECT * FROM `user` ORDER BY UID ASC";
-    var userQuery = "SELECT * FROM `user` WHERE Username = '" + Username + "'";
-    
-    returnValue = [{
-        success: '0',
-        message:'0'
-    }];
-    
-    db.query(UIDQuery, (errorA, UIDResults) => {
-        //Report query error
-        if (errorA) {
-            //res.redirect('/');
-            UIDReport = [{
-                status:false,
-                message:"There is an error with the query for UID"
-            }];
-        }
-    
-        //Report ids found
-        else if(UIDResults.length >0){
-            console.log('Current Users');
-            console.log(UIDResults);
-            UIDReport = [{
-                status:true,
-                message:"Ids found."
-            }];
-            
-            UIDDeterminer = 1;
-            userCount = UIDResults.length;
-            UID = (UIDResults[userCount - 1].UID) + 1;
-            
-            console.log('Largerst Current UID');
-            console.log(UIDResults[userCount - 1].UID);
-            console.log('New UID');
-            console.log(UID);
-        }
-        
-        //Create id for empty table
-        else{
-            UIDReport = [{
-                status:true,
-                message:"No current Ids found."
-            }];
-            
-            UIDDeterminer = 1;
-            UID = 1;
-        }  
-        
-        if (UIDDeterminer == 1){
-            db.query(userQuery, (errorB, userResults) => {
-                //Report query error
-                if (errorB) {
-                    //res.redirect('/');
-                    registerReport = [{
-                        status:false,
-                        message:"There is an error with the query"
-                    }];
-                    
-                    returnValue = [{
-                        success: '0',
-                        message:'0'
-                    }];
-                    console.log(returnValue);
-                    res.send(returnValue);
-                }
-            
-                //Report username already exists
-                else if(userResults.length >0){
-                    registerReport = [{
-                        status:false,
-                        message:"Username is already taken. Please enter another username."
-                    }];
-                    
-                    returnValue = [{
-                        success: '0',
-                        message:'0'
-                    }];
-                    console.log(returnValue);
-                    res.send(returnValue);
-                }
-                    
-                //Insert new user
-                else{
-                     //res.redirect('/');
-                    var insertUser = "INSERT INTO user(UID, Username, Password, FName, LName, RegDate, Admin) VALUES (" + UID + ", '" + Username + "', '" + Password + "', '" + FName + "', '" + LName + "', '" + newdate + "', " + Admin + ")";
-                    
-                    console.log(insertUser);
-        
-                    db.query(insertUser, (err2, inserted) => {
-                        //Report query error
-                        if (err2) {
-                            //throw err;
-                            registerReport = [{
-                                status:false,
-                                message:"Error registering."
-                            }];
-                            
-                            returnValue = [{
-                                success: '0',
-                                message:'0'
-                            }];
-                            console.log(returnValue);
-                            res.send(returnValue);
-                        }
-                     
-                        //Report user registration success
-                        else{
-                            registerReport = [{
-                                status:true,
-                                message:"Thank you! You are successfully registered."
-                            }];
-                            
-                            returnValue = [{
-                                success: '1',
-                                message:UID
-                            }];
-                            //console.log('Return registration report');
-                            //console.log(registerReport);
-                            console.log(returnValue);
-                            res.send(returnValue);
-                        }
-                    });
-                }
-            });
-        }
-        
-        //console.log('Return registration report');
-        //console.log(registerReport);
-        //console.log('Return registration result');
-        //console.log(returnValue);
-    });
-     //Return results to front-end
-    //res.json(returnValue);
-});
 
 //REMOVE TESTING 
 function registrationValidation(){
@@ -844,6 +563,288 @@ app.get('/api/getList', (req,res) => {
     res.json(list);
     console.log('Sent list of items');
 });*/
+
+//app.post('/api/login', (req,res) => {
+//function loginValidation(){
+app.post('/api/login', function (req,res) {
+    //TEST DATA
+    var userName = req.body.username;
+    var password = req.body.password;
+    var uid = 'z';
+    
+    //Return to front end. Contains login status and message
+    var returnValue = [{
+        success: '0',
+        message:'0'
+    }];
+    var loginReport= [{
+        status:false,
+        message:"No action"
+    }];
+    
+    var userQuery = "SELECT * FROM `user` WHERE Username = '" + userName + "'";
+    
+    db.query(userQuery, (error, userResults) => {
+        //Report query error
+        if (error) {
+            //res.redirect('/');
+            loginReport = [{
+                status:false,
+                message:"There is an error with the query"
+            }];
+            
+            returnValue = [{
+                success: '0',
+                message:'0'
+            }];
+        }
+    
+        //Check user input password against database information
+        else if(userResults.length >0){
+            
+            //Check username for matching letter case
+            var dbName = userResults[0].Username;
+    
+            var matchCase = '0';
+            if (userName === dbName){
+                matchCase = '1';
+            }
+            
+            if(matchCase == '1'){
+                if(password==userResults[0].Password){
+                    //res.redirect('/');
+
+                    uid = userResults[0].UID;
+                    console.log("UID logged in as");
+                    console.log(uid);
+                    
+                    loginReport = [{
+                        status:true,
+                        message:"Successfully authenticated"
+                    }];
+                    
+                    returnValue = [{
+                        success: '1',
+                        message: uid
+                    }];
+                }
+                    
+                else{
+                    //res.redirect('/');
+                    loginReport = [{
+                        status:false,
+                        message:"Username and password does not match"
+                    }]; 
+                    
+                    returnValue = [{
+                        success: '0',
+                        message: '0'
+                    }];
+                }
+            }
+            
+            else{
+                loginReport = [{
+                    status:false,
+                    message:"Username and password does not match"
+                }]; 
+                
+                returnValue = [{
+                    success: '0',
+                    message: '0'
+                }];
+            }
+        }
+        
+        //Report nonexistent user
+        else{
+            //res.redirect('/');
+            loginReport = [{
+                status:false,
+                message:"Username does not exits"
+            }];
+            
+            returnValue = [{
+                success: '0',
+                message: "Username does not exits"
+            }];
+            //res.send(returnValue);
+        }
+        
+        //Return results to front-end
+        console.log(loginReport);
+        console.log(returnValue);
+        res.send(returnValue); 
+    });
+    //console.log('out');
+    //console.log(loginReport);
+    //console.log(returnValue);
+    //Return results to front-end
+    //ADD??
+    //res.send(returnValue);
+});
+
+//app.post('/api/register', (req,res) => {
+//function registrationValidation(){
+app.post('/api/CallRegisterLogin', function (req,res) {
+    //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName, and maybe Admin?
+    var Username = req.body.username; 
+    var Password = req.body.password;
+    var FName = req.body.firstname;
+    var LName = req.body.lastname;
+    
+    var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+    var newdate = year + "/" + month + "/" + day;
+    
+    var Admin = false;
+    
+    //To be returned to front end. Contains registration status and message
+    var registerReport= [{
+        status:false,
+        message:"No actions done"
+    }];
+    var UIDReport;
+    var returnValue;
+    var UIDDeterminer = 0;
+    var userCount = 0;
+    
+    var UIDQuery = "SELECT * FROM `user` ORDER BY UID ASC";
+    var userQuery = "SELECT * FROM `user` WHERE Username = '" + Username + "'";
+    
+    returnValue = [{
+        success: '0',
+        message:'0'
+    }];
+    
+    db.query(UIDQuery, (errorA, UIDResults) => {
+        //Report query error
+        if (errorA) {
+            //res.redirect('/');
+            UIDReport = [{
+                status:false,
+                message:"There is an error with the query for UID"
+            }];
+        }
+    
+        //Report ids found
+        else if(UIDResults.length >0){
+            console.log('Current Users');
+            console.log(UIDResults);
+            UIDReport = [{
+                status:true,
+                message:"Ids found."
+            }];
+            
+            UIDDeterminer = 1;
+            userCount = UIDResults.length;
+            UID = (UIDResults[userCount - 1].UID) + 1;
+            
+            console.log('Largerst Current UID');
+            console.log(UIDResults[userCount - 1].UID);
+            console.log('New UID');
+            console.log(UID);
+        }
+        
+        //Create id for empty table
+        else{
+            UIDReport = [{
+                status:true,
+                message:"No current Ids found."
+            }];
+            
+            UIDDeterminer = 1;
+            UID = 1;
+        }  
+        
+        if (UIDDeterminer == 1){
+            db.query(userQuery, (errorB, userResults) => {
+                //Report query error
+                if (errorB) {
+                    //res.redirect('/');
+                    registerReport = [{
+                        status:false,
+                        message:"There is an error with the query"
+                    }];
+                    
+                    returnValue = [{
+                        success: '0',
+                        message:'0'
+                    }];
+                    console.log(returnValue);
+                    res.send(returnValue);
+                }
+            
+                //Report username already exists
+                else if(userResults.length >0){
+                    registerReport = [{
+                        status:false,
+                        message:"Username is already taken. Please enter another username."
+                    }];
+                    
+                    returnValue = [{
+                        success: '0',
+                        message:"Username is already taken. Please enter another username."
+                    }];
+                    console.log(returnValue);
+                    res.send(returnValue);
+                }
+                    
+                //Insert new user
+                else{
+                     //res.redirect('/');
+                    var insertUser = "INSERT INTO user(UID, Username, Password, FName, LName, RegDate, Admin) VALUES (" + UID + ", '" + Username + "', '" + Password + "', '" + FName + "', '" + LName + "', '" + newdate + "', " + Admin + ")";
+                    
+                    console.log(insertUser);
+        
+                    db.query(insertUser, (err2, inserted) => {
+                        //Report query error
+                        if (err2) {
+                            //throw err;
+                            registerReport = [{
+                                status:false,
+                                message:"Error registering."
+                            }];
+                            
+                            returnValue = [{
+                                success: '0',
+                                message:'0'
+                            }];
+                            console.log(returnValue);
+                            res.send(returnValue);
+                        }
+                     
+                        //Report user registration success
+                        else{
+                            registerReport = [{
+                                status:true,
+                                message:"Thank you! You are successfully registered."
+                            }];
+                            
+                            returnValue = [{
+                                success: '1',
+                                message:UID
+                            }];
+                            //console.log('Return registration report');
+                            //console.log(registerReport);
+                            console.log(returnValue);
+                            res.send(returnValue);
+                        }
+                    });
+                }
+            });
+        }
+        
+        //console.log('Return registration report');
+        //console.log(registerReport);
+        //console.log('Return registration result');
+        //console.log(returnValue);
+    });
+     //Return results to front-end
+    //res.json(returnValue);
+});
 
 // Requires UID parameter
 // returns result as {success='0',bookmarks={...}}
