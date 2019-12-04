@@ -131,19 +131,11 @@ function loginValidation(){
             }];
             //res.send(returnValue);
         }
-        console.log('in');
         
         //Return results to front-end
         console.log(loginReport);
         console.log(returnValue);
-        
     });
-    //console.log('out');
-    //console.log(loginReport);
-    //console.log(returnValue);
-    //Return results to front-end
-    //ADD??
-    //res.send(returnValue);
 }
 
 //REMOVE TESTING 
@@ -290,19 +282,16 @@ function registrationValidation(){
                                 success: '1',
                                 message:UID
                             }];
-                            console.log('Return successful registration registration result'); console.log(returnValue);
-                            
-                            //console.log('Return registration result');
-                //console.log(returnValue);
+                            console.log('Return successful registration registration result'); 
+                            console.log(returnValue);
                         }
-                        //console.log(registerReport);
                     });
                 }
                 
-                //console.log('Return registration report');
-                //console.log(registerReport);
-                //console.log('Return registration result');
-                //console.log(returnValue);
+                console.log('Return registration report');
+                console.log(registerReport);
+                console.log('Return registration result');
+                console.log(returnValue);
             }); 
         } 
     });
@@ -474,8 +463,6 @@ function addTagsToBookmark(){
             console.log(tagReport);
         }
     });
-    
-    
 }
 
 // create connection to database
@@ -496,7 +483,7 @@ db.connect((err) => {
     
     getHomePage();
     //loginValidation();
-    registrationValidation();
+    //registrationValidation();
 });
 
 global.db = db;
@@ -590,10 +577,7 @@ app.post('/api/login', function (req,res) {
                 message:"There is an error with the query"
             }];
             
-            returnValue = [{
-                success: '0',
-                message:'0'
-            }];
+            res.send('0');
         }
     
         //Check user input password against database information
@@ -607,7 +591,9 @@ app.post('/api/login', function (req,res) {
                 matchCase = '1';
             }
             
+            //Check valid username password
             if(matchCase == '1'){
+                //Report matching information
                 if(password==userResults[0].Password){
                     //res.redirect('/');
 
@@ -624,8 +610,11 @@ app.post('/api/login', function (req,res) {
                         success: '1',
                         message: uid
                     }];
-                }
                     
+                    res.json(returnValue); 
+                }
+                  
+                //Report mismatched information
                 else{
                     //res.redirect('/');
                     loginReport = [{
@@ -633,23 +622,18 @@ app.post('/api/login', function (req,res) {
                         message:"Username and password does not match"
                     }]; 
                     
-                    returnValue = [{
-                        success: '0',
-                        message: '0'
-                    }];
+                    res.send('0');
                 }
             }
             
+            //Report mismatched information
             else{
                 loginReport = [{
                     status:false,
                     message:"Username and password does not match"
                 }]; 
                 
-                returnValue = [{
-                    success: '0',
-                    message: '0'
-                }];
+                res.send('0');
             }
         }
         
@@ -661,24 +645,14 @@ app.post('/api/login', function (req,res) {
                 message:"Username does not exits"
             }];
             
-            returnValue = [{
-                success: '0',
-                message: '0'
-            }];
-            //res.send(returnValue);
+            res.send('0');
         }
         
         //Return results to front-end
+        console.log('Login report');
         console.log(loginReport);
         console.log(returnValue);
-        res.send(returnValue); 
     });
-    //console.log('out');
-    //console.log(loginReport);
-    //console.log(returnValue);
-    //Return results to front-end
-    //ADD??
-    //res.send(returnValue);
 });
 
 app.post('/api/CallRegisterLogin', function (req,res) {
@@ -702,17 +676,15 @@ app.post('/api/CallRegisterLogin', function (req,res) {
         message:"No actions done"
     }];
     var UIDReport;
-    var returnValue;
+    var returnValue = [{
+        success: '0',
+        message:'0'
+    }];
     var UIDDeterminer = 0;
     var userCount = 0;
     
     var UIDQuery = "SELECT * FROM `user` ORDER BY UID ASC";
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + Username + "'";
-    
-    returnValue = [{
-        success: '0',
-        message:'0'
-    }];
     
     db.query(UIDQuery, (errorA, UIDResults) => {
         //Report query error
@@ -754,6 +726,7 @@ app.post('/api/CallRegisterLogin', function (req,res) {
             UID = 1;
         }  
         
+        //Check registration details
         if (UIDDeterminer == 1){
             db.query(userQuery, (errorB, userResults) => {
                 //Report query error
@@ -766,10 +739,10 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                     
                     returnValue = [{
                         success: '0',
-                        message:'0'
+                        message:'1'
                     }];
                     console.log(returnValue);
-                    res.send(returnValue);
+                    res.json(returnValue);
                 }
             
                 //Report username already exists
@@ -781,10 +754,10 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                     
                     returnValue = [{
                         success: '0',
-                        message:'0'
+                        message:'2'
                     }];
                     console.log(returnValue);
-                    res.send(returnValue);
+                    res.json(returnValue);
                 }
                     
                 //Insert new user
@@ -805,10 +778,10 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                             
                             returnValue = [{
                                 success: '0',
-                                message:'0'
+                                message:'3'
                             }];
                             console.log(returnValue);
-                            res.send(returnValue);
+                            res.json(returnValue);
                         }
                      
                         //Report user registration success
@@ -822,23 +795,23 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                                 success: '1',
                                 message:UID
                             }];
-                            //console.log('Return registration report');
-                            //console.log(registerReport);
+                            
+                            console.log('Return registration report');
+                            console.log(registerReport);
                             console.log(returnValue);
-                            res.send(returnValue);
+                            res.json(returnValue);
                         }
                     });
                 }
             });
         }
         
-        //console.log('Return registration report');
-        //console.log(registerReport);
-        //console.log('Return registration result');
-        //console.log(returnValue);
+        else{
+            console.log('FINAL- Return registration result');
+            console.log(returnValue);
+            res.json(returnValue);
+        }
     });
-     //Return results to front-end
-    //res.json(returnValue);
 });
 
 // Requires UID parameter
