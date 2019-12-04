@@ -80,6 +80,16 @@ export function Landing() {
     const [isRegModalOpen, setRegModal] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    function loginHelper(name, password){
+        CallLogin(name, password);
+        setIsModalOpen(false);
+    }
+
+    function loginRegisterHelper(name, password, fname, lname){
+        CallRegisterLogin(name, password, fname, lname);
+        setIsModalOpen(false);
+    }
+
 
     return (
         <ModalProvider>
@@ -104,7 +114,7 @@ export function Landing() {
                                         <p>password</p>
                                         <input type="text" name="password" />
                                         <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link>
-                                        <button name="New" onClick={() => CallLogin('sam','secret')}>Login</button>
+                                        <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button>
                                     </Modal>
                                 )}
                             </div>
@@ -123,7 +133,7 @@ export function Landing() {
                                         <input type="text" name="lname" />
                                         <br/>
                                         <div id="register_response"></div>
-                                        <button name="registerz" onClick={() => CallRegisterLogin(
+                                        <button name="registerz" onClick={() => loginRegisterHelper(
                                             'dum1','dum2','dum3','dum4'
                                         )}>Test Register without filling fields</button>
                                     </Modal>
