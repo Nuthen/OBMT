@@ -11,7 +11,6 @@ export function doSomething() {
         })
 }// END PROTOTYPE
 
-
 let UserId = 0;
 
 // LOGIN CALL
@@ -22,17 +21,21 @@ export function CallLogin(name, pw) {
         password: pw
     })
         .then(res => {
-            if (res.data[0] == true) {
-                UserId = res.data[1];
+            if (res.data[0].success == 1) {
+                UserId = res.data[0].message;
+                
+                console.log('logged in');
+                console.log(UserId);
                 return true;
             }
             else {
                 //displayError
+                console.log('no good log in');
+                
                 return false;
             }
         })
 }
-
 
 // REGISTER CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
@@ -44,14 +47,18 @@ export function CallRegisterLogin(name, pw, fName, lName) {
         lastname: lName
     })
         .then(res => {
-            if (res.data[0] == true) {
+            if (res.data[0].success == 1){
                 console.log('it worked');
-                UserId = res.data[1];
+                UserId = res.data[0].message;
+        
+                console.log('Registered');
+                console.log(UserId);
                 return true;
             }
             else {
                 //displayError
                 console.log('it failed');
+            
                 return false;
             }
         })
@@ -136,7 +143,6 @@ export function addBookmark(uid, title, url, description, tags) {
             }
         })
 }
-
 
 export function getBookmarks() {
     return new Promise(function (resolve, reject) {
