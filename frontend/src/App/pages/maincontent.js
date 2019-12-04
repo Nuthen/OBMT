@@ -94,9 +94,11 @@ export function Main() {
         setbookmarkContainer(bookmarks);
         return;
     }
-    
-        
-    
+
+    function addBookmarkHelper(uid, title, url, description, tags){
+        addBookmark(uid, title, url, description, tags);
+        setBookMarkModal(false);
+    }
     
     //the following lines define state for certain dynamic page elements
     //both have the same form:
@@ -133,7 +135,7 @@ export function Main() {
                                 <input type="text" name="description" id="description" />
                                 <p>tags</p>
                                 <input type="text" name="tags" id="tags" />
-                                <button name="Addbookmark" onClick={() => addBookmark(
+                                <button name="Addbookmark" onClick={() => addBookmarkHelper(
                                     0,
                                     document.getElementById("title").value,
                                     document.getElementById("url").value,
