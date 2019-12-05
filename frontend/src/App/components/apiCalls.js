@@ -16,30 +16,29 @@ let UserId = 0;
 // LOGIN CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallLogin(name, pw) {
+    return new Promise(function (resolve, reject) {
     axios.post(`/api/login`, {
         username: name,
         password: pw
     })
         .then(res => {
             if (res.data[0].success == 1) {
-                UserId = res.data[0].message;
-                
-                console.log('logged in');
-                console.log(UserId);
-                return true;
+                UserId = res.data[1];
+                return resolve(res.data[0].message);
             }
             else {
                 //displayError
-                console.log('no good log in');
-                
-                return false;
+                return reject(false);
             }
         })
+    });
 }
+
 
 // REGISTER CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallRegisterLogin(name, pw, fName, lName) {
+    return new Promise(function (resolve, reject) {
     axios.post(`/api/CallRegisterLogin`, {
         username: name,
         password: pw,
@@ -47,21 +46,18 @@ export function CallRegisterLogin(name, pw, fName, lName) {
         lastname: lName
     })
         .then(res => {
-            if (res.data[0].success == 1){
+            if (res.data[0] == true) {
                 console.log('it worked');
-                UserId = res.data[0].message;
-        
-                console.log('Registered');
-                console.log(UserId);
-                return true;
+                UserId = res.data[1];
+                return resolve(UserId);
             }
             else {
                 //displayError
                 console.log('it failed');
-            
-                return false;
+                return reject(false);
             }
         })
+    });
 }
 
 // ADD/EDIT CALL
