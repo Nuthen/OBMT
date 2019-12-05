@@ -7,6 +7,8 @@ const path = require('path');
 const app = express();
 
 const scrape = require('scrape-metadata')
+const uuidv4 = require('uuid/v4');
+var session = require('express-session')
 
 //const port = 3306;
 
@@ -28,6 +30,8 @@ function getHomePage() {
 }
 
 global.searchQuery = {};
+
+var allSessionUsers = {}
 
 //FOR TESTING REMOVE
 function loginValidation(){
@@ -550,6 +554,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // parse form data client
 app.use(express.static(path.join(__dirname, 'public'))); // configure express to use public folder
 app.use(fileUpload()); // configure fileupload
+app.use(session({
+    secret: 'keyboard cat',
+    cookie: { maxAge: 100000000 },
+    genid: function(req) {
+        return uuidv4(); // use UUIDs for session IDs
+    }
+}));
 
 // routes for the app
 /*
@@ -608,6 +619,9 @@ app.post('/api/login', function (req,res) {
     //TEST DATA
     var username = req.body.username;
     var password = req.body.password;
+    
+    console.log(username);
+    console.log(password);
     var uid = 'z';
     
     //Return to front end. Contains login status and message
@@ -665,7 +679,14 @@ app.post('/api/login', function (req,res) {
                         message: uid
                     }];
                     
-                    res.json(returnValue); 
+                    res.json(returnValue);
+                    
+                    allSessionUsers[req.sessionID] = {
+                        login: true,
+                        UID: uid
+                    };
+                    
+                    //console.log(JSON.stringify(allSessionUsers));
                 }
                   
                 //Report mismatched information
@@ -850,6 +871,11 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                                 message:UID
                             }];
                             
+                            allSessionUsers[req.sessionID] = {
+                                login: true,
+                                UID: uid
+                            };
+                            
                             console.log('Return registration report');
                             console.log(registerReport);
                             console.log(returnValue);
@@ -871,9 +897,33 @@ app.post('/api/CallRegisterLogin', function (req,res) {
 // Requires UID parameter
 // returns result as {success='0',bookmarks={...}}
 app.post('/api/getBookmarks', function (req,res) {
-    var UID = req.body.UID;
+    console.log("REQ BODY:" + JSON.stringify(req.session.userId));
+    console.log("REQ:" + JSON.stringify(allSessionUsers));
+    console.log("REQ:" + JSON.stringify(req.session));
+    console.log("REQ:" + req.sessionID);
+    //var UID = 111;//req.body.UID;
     
-    if (UID == null) {
+    var loggedIn = false;
+    var UID;
+    
+    if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
+        loggedIn = allSessionUsers[req.sessionID].login;
+        UID = allSessionUsers[req.sessionID].UID;
+    }
+    
+    if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
+        var returnValue = {
+            success: '0',
+            message: "Invalid session: Are you logged in?"
+        };
+        res.json(returnValue);
+    } else if (!loggedIn) {
+        var returnValue = {
+            success: '0',
+            message: "Error: Not logged in."
+        };
+        res.json(returnValue);
+    } else if (UID == null) {
         console.log("Null UID");
         console.log("Get bookmarks failed due to null parameter.");
         
@@ -1034,6 +1084,9 @@ async function sendSearchResults(res, UID, bookmarks, SearchString) {
         }
     }
     
+    console.log(returnBookmarks);
+    returnBookmarks.sort(function(a, b){return a.Priority-b.Priority});
+    
     var returnValue = {
         success: '1',
         bookmarks: returnBookmarks
@@ -1048,12 +1101,30 @@ async function sendSearchResults(res, UID, bookmarks, SearchString) {
 // Lower priority = more relevant. Priority will begin at 0-max and will not skip any values (goes up one at a time).
 // And the totally unrelevant bookmarks (0 keyword matches) are not returned.
 app.post('/api/searchBookmarks', function (req,res) {
-    var UID = req.body.UID;
+    //var UID = 111;//req.body.UID;
     var SearchString = req.body.SearchString;
     
-    global.searchQuery[UID] = {}
+    var loggedIn = false;
+    var UID;
     
-    if (UID == null) {
+    if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
+        loggedIn = allSessionUsers[req.sessionID].login;
+        UID = allSessionUsers[req.sessionID].UID;
+    }
+    
+    if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
+        var returnValue = {
+            success: '0',
+            message: "Invalid session: Are you logged in?"
+        };
+        res.json(returnValue);
+    } else if (!loggedIn) {
+        var returnValue = {
+            success: '0',
+            message: "Error: Not logged in."
+        };
+        res.json(returnValue);
+    } else if (UID == null) {
         console.log("Null UID");
         console.log("Get bookmarks failed due to null parameter.");
         
@@ -1070,6 +1141,7 @@ app.post('/api/searchBookmarks', function (req,res) {
         }
         res.json(returnValue);
     } else {
+        global.searchQuery[UID] = {}
         var bookmarkQuery = "SELECT * FROM `bookmark` WHERE UID = '" + UID + "'";
         
         // Query to get all of the user's bookmarks
@@ -1116,15 +1188,15 @@ app.post('/api/searchBookmarks', function (req,res) {
 
 // Returns {success: '0'} or {success: '1'}
 app.post('/api/addBookmark', function (req,res) {
-    var UID = req.body.UID;
+    //var UID = req.body.UID;
     var Title = req.body.Title;
     var URL = req.body.URL;
     var Priority = 1;
     var Description = req.body.Description;
     
-    if (UID == null) {
-        console.log("Null UID");
-    }
+    //if (UID == null) {
+    //    console.log("Null UID");
+    //}
     if (Title == null) {
         console.log("Null Title");
     }
@@ -1138,7 +1210,27 @@ app.post('/api/addBookmark', function (req,res) {
         console.log("Null Description");
     }
     
-    if (UID == null || Title == null || URL == null || Priority == null || Description == null) {
+    var loggedIn = false;
+    var UID;
+    
+    if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
+        loggedIn = allSessionUsers[req.sessionID].login;
+        UID = allSessionUsers[req.sessionID].UID;
+    }
+    
+    if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
+        var returnValue = {
+            success: '0',
+            message: "Invalid session: Are you logged in?"
+        };
+        res.json(returnValue);
+    } else if (!loggedIn) {
+        var returnValue = {
+            success: '0',
+            message: "Error: Not logged in."
+        };
+        res.json(returnValue);
+    } else if (UID == null || Title == null || URL == null || Priority == null || Description == null) {
         var returnValue = {
             success: '0',
         }
@@ -1262,6 +1354,8 @@ app.post('/api/editBookmark', function (req,res) {
     var Priority = 1;
     var Description = req.body.Description;
     
+    console.log("REQ:" + JSON.stringify(allSessionUsers));
+    console.log("REQ:" + req.sessionID);
     
     if (BID != null && (Title != null && URL != null &&  Description != null)) {
         // new BID determined by max BID + 1 
@@ -1344,6 +1438,10 @@ app.post('/api/editBookmark', function (req,res) {
 // It does not represent if all associated tags are deleted. (But it attempts to remove them as well).
 app.post('/api/deleteBookmark', function (req,res) {
     var BID = req.body.BID;
+    
+    console.log("REQ:" + JSON.stringify(allSessionUsers));
+    console.log("REQ:" + req.sessionID);
+    
     if (BID == null) {
         console.log("Null BID");
         console.log("Delete bookmark failed due to null parameter.");

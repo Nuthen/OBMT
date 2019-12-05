@@ -13,8 +13,10 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",
+    "express-session": "^1.17.0",
     "mysql": "^2.17.1",
     "req-flash": "0.0.3",
-    "scrape-metadata": "^2.0.0"
+    "scrape-metadata": "^2.0.0",
+    "uuid": "^3.3.3"
   }
 }
