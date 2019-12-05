@@ -73,7 +73,7 @@ function CommentBubble(props, nestedModalArr) {
             {User(props)}
             {TextBody(props)}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button onClick={() => deleteBM()}>delete(no auto refresh yet)</button>
+                <div style={modal_style[".add-bm"]} onClick={() => deleteBM()}>delete</div>
                 <div style={modal_style[".bookmark-box"]}>
                         <div className="modify" onClick={() => setParentStates()} style={modal_style[".add-bm"]}>modify</div>
                 </div>
