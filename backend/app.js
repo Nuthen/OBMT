@@ -731,7 +731,7 @@ app.post('/api/login', function (req,res) {
 });
 
 app.post('/api/CallRegisterLogin', function (req,res) {
-    //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName, and maybe Admin?
+    //TEST DATA- NEED FROM FRONT-END Username, Password, FName, LName
     var Username = req.body.username; 
     var Password = req.body.password;
     var FName = req.body.firstname;
@@ -1189,11 +1189,17 @@ app.post('/api/searchBookmarks', function (req,res) {
 
 // Returns {success: '0'} or {success: '1'}
 app.post('/api/addBookmark', function (req,res) {
-    //var UID = req.body.UID;
     var Title = req.body.Title;
     var URL = req.body.URL;
     var Priority = 1;
     var Description = req.body.Description;
+    
+    var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+
+    var newdate = year + "/" + month + "/" + day;
     
     //if (UID == null) {
     //    console.log("Null UID");
@@ -1244,14 +1250,9 @@ app.post('/api/addBookmark', function (req,res) {
         //var URL = "umdearborn.edu";
         //var Priority = 1;
         //var Description = "My cool website2.";
-
-        var dateObj = new Date();
-        var month = dateObj.getUTCMonth() + 1; //months from 1-12
-        var day = dateObj.getUTCDate();
-        var year = dateObj.getUTCFullYear();
-
-        var newdate = year + "/" + month + "/" + day;
-
+        
+        
+//var newdate = '2019-12-05';
         var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
         var maxQuery = "SELECT MAX(BID) as BID FROM `bookmark`";
 
@@ -1309,7 +1310,7 @@ app.post('/api/addBookmark', function (req,res) {
                     }
 
                     else{
-                        var insertBookmark = "INSERT INTO bookmark(BID, UID, Title, URL, Priority, Description, Date) VALUES (" + newBID + ", " + UID + ", '" + Title + "', '" + URL + "', '" + Priority + "', '" + Description + "', " + newdate + ")";
+                        var insertBookmark = "INSERT INTO bookmark(BID, UID, Title, URL, Priority, Description, Date) VALUES (" + newBID + ", " + UID + ", '" + Title + "', '" + URL + "', '" + Priority + "', '" + Description + "', '" + newdate + "')";
 
                         console.log(insertBookmark);
                         db.query(insertBookmark, (err2, inserted) => {
