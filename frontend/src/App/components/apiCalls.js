@@ -62,14 +62,14 @@ export function CallRegisterLogin(name, pw, fName, lName) {
 
 // EDIT CALL
 export function CallRegisterBookmark(bid, t, u, p, desc) {
-    console.log('good')
+    return new Promise(function (resolve, reject) {
     axios.post(`/api/editBookmark`, {
         // userId: UserId,
-        BID: bid,
-        Title: t,
-        URL: u,
+        BID: bid.nestedBID,
+        Title: t.nestedTitle,
+        URL: u.nestedURL,
         Priority: p,
-        Description: desc,
+        Description: desc.nestedDesc,
         // date: d,
         // tags: tag
     })
@@ -77,14 +77,15 @@ export function CallRegisterBookmark(bid, t, u, p, desc) {
             if (res.data.success == 1) {
                 //displaySuccess
                 console.log('it worked');
-                return true;
+                return resolve(true);
             }
             else {
                 console.log('fail  :( edit bm)')
                 //displayError
-                return false;
+                return reject(false);
             }
         })
+    });
 }
 
 //DELETE CALL
@@ -155,7 +156,7 @@ export function addBookmark(uid, title, url, description, tags) {
     });
 }
 
-export function getBookmarks() {
+export function getBookmarks(nestedModalArr) {
     console.log("USER ID: " + UserId);
     return new Promise(function (resolve, reject) {
         axios.post(`/api/getBookmarks`, {
@@ -167,7 +168,7 @@ export function getBookmarks() {
                     //obj is just the bookmark data
                     var obj = res.data.bookmarks;
                     //commentBox returns a div we want to render
-                    var tbl = CommentBox(obj);
+                    var tbl = CommentBox(obj,nestedModalArr);
                     //resolve ''updates'' promise in maincontent.js
                     //updates is probably the wrong word.  it gives
                     //promise a value.
