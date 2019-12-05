@@ -117,7 +117,7 @@ export function CallSearch(searchString) {
     })
         .then(res => {
             if (res.data.success == 1) {
-                //handle returned shit here
+                //handle returned here
                 //console.log(res.data.bookmarks)
                 //return resolve(res.data.bookmarks);
                 
