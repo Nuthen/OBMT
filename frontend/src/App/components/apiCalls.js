@@ -17,20 +17,20 @@ let UserId = 0;
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallLogin(name, pw) {
     return new Promise(function (resolve, reject) {
-    axios.post(`/api/login`, {
-        username: name,
-        password: pw
-    })
-        .then(res => {
-            if (res.data[0].success == 1) {
-                UserId = res.data[1];
-                return resolve(res.data[0].message);
-            }
-            else {
-                //displayError
-                return reject(false);
-            }
+        axios.post(`/api/login`, {
+            username: name,
+            password: pw
         })
+            .then(res => {
+                if (res.data[0].success == 1) {
+                    UserId = res.data[1];
+                    return resolve(res.data[0].message);
+                }
+                else {
+                    //displayError
+                    return reject(false);
+                }
+            })
     });
 }
 
@@ -39,24 +39,24 @@ export function CallLogin(name, pw) {
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallRegisterLogin(name, pw, fName, lName) {
     return new Promise(function (resolve, reject) {
-    axios.post(`/api/CallRegisterLogin`, {
-        username: name,
-        password: pw,
-        firstname: fName,
-        lastname: lName
-    })
-        .then(res => {
-            if (res.data[0].success == 1) {
-                console.log('it worked');
-                UserId = res.data[0].message;
-                return resolve(UserId);
-            }
-            else {
-                //displayError
-                console.log('it failed');
-                return reject(false);
-            }
+        axios.post(`/api/CallRegisterLogin`, {
+            username: name,
+            password: pw,
+            firstname: fName,
+            lastname: lName
         })
+            .then(res => {
+                if (res.data[0].success == 1) {
+                    console.log('it worked');
+                    UserId = res.data[0].message;
+                    return resolve(UserId);
+                }
+                else {
+                    //displayError
+                    console.log('it failed');
+                    return reject(false);
+                }
+            })
     });
 }
 
@@ -87,18 +87,23 @@ export function CallRegisterBookmark(bid, t, u, p, desc, d, tag) {
 }
 
 //DELETE CALL
-export function CallDelete(bid) {
-    axios.post(`/api/delete`, {
-        userId: UserId,
-        bid: builtinModules
+export function CallDelete(uid, bid) {
+    console.log('inside calldelete:')
+    console.log('UID: ', uid);
+    console.log('BID: ', bid);
+    axios.post(`/api/deleteBookmark`, {
+        userId: uid,
+        BID: bid
     })
         .then(res => {
-            if (res.data[0] == true) {
+            if (res.data.success == 1) {
                 //displaySuccess
+                console.log('it worked')
                 return true;
             }
             else {
                 //displayError
+                console.log('it did not work')
                 return false;
             }
         })
@@ -123,21 +128,24 @@ export function CallSearch(searchString) {
 }
 
 export function addBookmark(uid, title, url, description, tags) {
-    axios.post(`/api/addBookmark`, {
-        UID: uid,
-        Title: title,
-        URL: url,
-        Description: description,
-        Tags: tags
-    })
-        .then(res => {
-            if (res.data.success == 1) {
-                console.log('it worked');
-            }
-            else {
-                console.log('it didn\'t work');
-            }
+    return new Promise(function (resolve, reject) {
+        axios.post(`/api/addBookmark`, {
+            UID: uid,
+            Title: title,
+            URL: url,
+            Description: description,
+            Tags: tags
         })
+            .then(res => {
+                if (res.data.success == 1) {
+                    return resolve(true);
+                }
+                else {
+                    console.log('it didn\'t work(addbookmark)');
+                    return resolve(false);
+                }
+            })
+    });
 }
 
 export function getBookmarks() {
@@ -160,8 +168,8 @@ export function getBookmarks() {
                 else {
                     reject('Error loading table');
                 }
-        })
+            })
     });
 }
-{/* The function: CommentBox(arg) takes a list of objects in the form described in the comment above this export function */}
-{/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */}
+{/* The function: CommentBox(arg) takes a list of objects in the form described in the comment above this export function */ }
+{/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */ }

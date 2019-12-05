@@ -1,7 +1,7 @@
 import React, { Suspense, useState,useEffect  } from 'react'
 import { ModalProvider, Modal } from '../components/loginModal';
 import { Bookmark } from '../components/scrollingBox';
-import { addBookmark, getBookmarks } from '../components/apiCalls';
+import { addBookmark, getBookmarks, didDelete } from '../components/apiCalls';
 
 
 const converted = {
@@ -75,8 +75,7 @@ const converted = {
     },
 
 };
-
-
+ 
 export function Main() {
 
     //one time after pageload***
@@ -88,6 +87,8 @@ export function Main() {
     //   https://stackoverflow.com/a/55481525
     useEffect(() => getBookmarks().then(updateBookmarkTable),[]);
 
+
+
     // Updates the state of the table with the response from 
     // the backend
     function updateBookmarkTable(bookmarks) {
@@ -95,9 +96,10 @@ export function Main() {
         return;
     }
 
-    function addBookmarkHelper(uid, title, url, description, tags){
-        addBookmark(uid, title, url, description, tags);
+    //after a bookmark is added to backend and we receive response: close modal and refresh bookmark list
+    function addBookmarkHelper(resp){
         setBookMarkModal(false);
+        return getBookmarks();        
     }
     
     //the following lines define state for certain dynamic page elements
@@ -112,6 +114,9 @@ export function Main() {
     // arg1: bookmarkContainer  ~~> the entire div surrounding the bookmarks from the DB
     // arg2: When promsie is returned we update the state of the div to be the div containing the elements from the DB
     
+    
+
+
     return (
         <ModalProvider>
             <div className="shell" style={converted[".shell"]}>
@@ -135,13 +140,13 @@ export function Main() {
                                 <input type="text" name="description" id="description" />
                                 <p>tags</p>
                                 <input type="text" name="tags" id="tags" />
-                                <button name="Addbookmark" onClick={() => addBookmarkHelper(
+                                <button name="Addbookmark" onClick={() => addBookmark(
                                     0,
                                     document.getElementById("title").value,
                                     document.getElementById("url").value,
                                     document.getElementById("description").value,
                                     document.getElementById("tags").value,
-                                )
+                                ).then(addBookmarkHelper).then(updateBookmarkTable)
 
                                 }>Add bookmark</button>
                             </Modal>
@@ -151,7 +156,6 @@ export function Main() {
                 <div className="content-main" style={converted[".content-main"]}>
                     <div id='putboxhere' style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>
                         <Suspense>{bookmarkContainer}</Suspense>
-                        {/* once the items from the DB are returned load it */}
                     </div>
                 </div>
             </div>
