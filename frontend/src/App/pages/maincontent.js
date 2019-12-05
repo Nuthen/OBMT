@@ -147,10 +147,13 @@ export function Main() {
     //part of the search functionality  -->  ***should*** just work once the backend returns lists.
     //if not it only will need minor tweaks
     function initiateSearch(str){
-        console.log(str);
-        //the following line may cause errors once the backend is fixxed
-        //you can comment out the .then() part to make any errors stop
-        CallSearch(str).then(updateBookmarkTable);
+        if(str.slice(-1) == ' '){
+            console.log(str);
+            //the following line may cause errors once the backend is fixxed
+            //you can comment out the .then() part to make any errors stop
+            CallSearch(str).then(updateBookmarkTable);
+        }
+        
     }
 
 
