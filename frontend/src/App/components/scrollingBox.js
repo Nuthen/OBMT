@@ -7,7 +7,7 @@ const modal_style = {
         width: 400,
         textAlign: "center",
     },
-    ".add-bm": { color: "white", fontFamily: '"Arial", sans-serif', fontSize: "4vh", fontWeight: 'bold', cursor: "pointer", },
+    ".add-bm": { color: "#629e1d", fontFamily: '"Arial", sans-serif', fontSize: "3vh", fontWeight: 'bold', cursor: "pointer", },
     ".bookmark-box": {
         order: "3",
         display: "flex",
@@ -35,14 +35,14 @@ const converted = {
 function User(props) {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-            {props.Title}
+            <h3>{props.Title}</h3>
         </div>
     );
 }
 
 function TextBody(props) {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '90%', border: 'dashed', borderRadius: '25px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '90%', border: 'dashed', borderRadius: '25px', color:"#0982AF" }}>
             <p>{props.URL}</p>
             <p>{props.Description}</p>
         </div>
@@ -55,12 +55,12 @@ function CommentBubble(props, nestedModalArr) {
         return;
     }
 
-    function afterDelResp(resp){
+    function afterDelResp(resp) {
         nestedModalArr[6](true);
         return;
     }
 
-    function setParentStates(){
+    function setParentStates() {
         nestedModalArr[1](true);
         nestedModalArr[2](props.BID);
         nestedModalArr[3](props.Title);
@@ -69,14 +69,12 @@ function CommentBubble(props, nestedModalArr) {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: 'fit', border: 'solid', borderColor: 'blue', backgroundColor: '#ffe6d5', justifyContent: 'space-between', borderRadius: '25px' }}>
-            {User(props)}
-            {TextBody(props)}
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: 'fit', border: 'solid', borderColor: 'blue', backgroundColor: '#ffe6d5', justifyContent: 'center', borderRadius: '25px' }}>
+            <div>{User(props)}</div>
+            <div style={{display:"flex", justifyContent:"center"}}>{TextBody(props)}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-around',}}>
                 <div style={modal_style[".add-bm"]} onClick={() => deleteBM()}>delete</div>
-                <div style={modal_style[".bookmark-box"]}>
-                        <div className="modify" onClick={() => setParentStates()} style={modal_style[".add-bm"]}>modify</div>
-                </div>
+                <div className="modify" onClick={() => setParentStates()} style={modal_style[".add-bm"]}>modify</div>
             </div>
         </div>
     );
