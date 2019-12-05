@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
-import { doSomething } from '../components/apiCalls'
-import { Link } from 'react-router-dom';
+import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
+import { withRouter,Link, Route, Redirect } from 'react-router-dom';
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -80,6 +80,46 @@ export function Landing() {
     const [isRegModalOpen, setRegModal] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    function loginHelper(name, password){
+        CallLogin(name, password);
+        setIsModalOpen(false);
+    }
+
+    function loginRegisterHelper(name, password, fname, lname){
+        CallRegisterLogin(name, password, fname, lname).then(authenticateUser);
+        // setIsModalOpen(false);
+    }
+
+    const [isLoggedIn, setLoggedInTo] = useState(0);
+
+
+    //both login and register "END"  at this function if they are successful.  This function SHOULD
+    //redirect users to the maincontent page. fuck react-router-dom and fuck this framework
+    function authenticateUser(UserID_resp){
+        setLoggedInTo(UserID_resp);
+        console.log('logged/registered into uid: ',UserID_resp);
+        setIsModalOpen(false);
+        //how we sh/could redirect to the main page
+        //redirectNow();
+    }
+
+    function initiateAuthentication(uname,pw,rd){
+        CallLogin(uname,pw).then(authenticateUser);
+    }
+
+    
+    //The following function would work if the world wasn't totally fucked
+    //aka  we need to update react-router-dom to be able to use useHistory
+    //this would let us easily redirect to the main page after we validate the user
+
+    // function redirectToMain() {
+    //     let hist = useHistory();
+
+    //     function redirectNow(){
+    //         hist.push('./maincontent');
+    //     }
+    // }
+
 
     return (
         <ModalProvider>
@@ -103,8 +143,9 @@ export function Landing() {
                                         <input type="text" name="name" />
                                         <p>password</p>
                                         <input type="text" name="password" />
-                                        <Link to={'./maincontent'}><button>Go</button></Link>
-                                        <button name="New" onClick={() => doSomething()}>NEW</button>
+                                        <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link>
+                                        {/* <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button> */}
+                                        <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login</button>
                                     </Modal>
                                 )}
                             </div>
@@ -114,11 +155,18 @@ export function Landing() {
                                 {isRegModalOpen && (
                                     <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
                                         <p>Username</p>
-                                        <input type="text" name="name" />
+                                        <input type="text" name="uname"/>
                                         <p>password</p>
                                         <input type="text" name="password" />
-                                        <p>dob</p>
-                                        <input type="text" name="dob" />
+                                        <p>fname</p>
+                                        <input type="text" name="fname" />
+                                        <p>lname</p>
+                                        <input type="text" name="lname" />
+                                        <br/>
+                                        <div id="register_response"></div>
+                                        <button name="registerz" onClick={() => loginRegisterHelper(
+                                            'dum1wtfmate','dum2','dum3','dum4'
+                                        )}>Test Register without filling fields</button>
                                     </Modal>
                                 )}
                             </div>
@@ -129,6 +177,7 @@ export function Landing() {
                         <div className="detail-circle" style={converted[".detail-circle"]}>detail4</div>
                     </div>
                 </div>
+                <div>{console.log('is render being called?')}</div>
             </div>
         </ModalProvider>
     )

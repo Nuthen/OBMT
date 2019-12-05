@@ -1,6 +1,7 @@
 import { builtinModules } from 'module';
 import axios from 'axios';
-
+import { CommentBox, Bookmark } from '../components/scrollingBox';
+import React, { useCallback } from 'react'
 
 // PROTOTYPE FOR BACKEND CALL
 export function doSomething() {
@@ -10,47 +11,53 @@ export function doSomething() {
         })
 }// END PROTOTYPE
 
-
 let UserId = 0;
 
 // LOGIN CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallLogin(name, pw) {
+    return new Promise(function (resolve, reject) {
     axios.post(`/api/login`, {
         username: name,
         password: pw
     })
         .then(res => {
-            if (res.data[0] == true) {
+            if (res.data[0].success == 1) {
                 UserId = res.data[1];
-                return true;
+                return resolve(res.data[0].message);
             }
             else {
                 //displayError
-                return false;
+                return reject(false);
             }
         })
+    });
 }
 
 
 // REGISTER CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
-export function CallRegisterLogin(name, pw, dob) {
-    axios.post(`/api/register`, {
+export function CallRegisterLogin(name, pw, fName, lName) {
+    return new Promise(function (resolve, reject) {
+    axios.post(`/api/CallRegisterLogin`, {
         username: name,
         password: pw,
-        birthdate: dob
+        firstname: fName,
+        lastname: lName
     })
         .then(res => {
-            if (res.data[0] == true) {
-                UserId = res.data[1];
-                return true;
+            if (res.data[0].success == 1) {
+                console.log('it worked');
+                UserId = res.data[0].message;
+                return resolve(UserId);
             }
             else {
                 //displayError
-                return false;
+                console.log('it failed');
+                return reject(false);
             }
         })
+    });
 }
 
 // ADD/EDIT CALL
@@ -115,7 +122,7 @@ export function CallSearch(searchString) {
         })
 }
 
-export function addBookmark(uid,title,url,description,tags) {
+export function addBookmark(uid, title, url, description, tags) {
     axios.post(`/api/addBookmark`, {
         UID: uid,
         Title: title,
@@ -133,17 +140,28 @@ export function addBookmark(uid,title,url,description,tags) {
         })
 }
 
-
 export function getBookmarks() {
-    axios.post(`/api/getBookmarks`, {
-        UID:0
-    })
-        .then(res => {
-            if (res.data.success == 1) {
-                console.log('it worked');
-            }
-            else {
-                console.log('it didn\'t work');
-            }
+    return new Promise(function (resolve, reject) {
+        axios.post(`/api/getBookmarks`, {
+            UID: 0
         })
+            .then(res => {
+                //response is the JSON object returned
+                if (res.data.success == 1) {
+                    //obj is just the bookmark data
+                    var obj = res.data.bookmarks;
+                    //commentBox returns a div we want to render
+                    var tbl = CommentBox(obj);
+                    //resolve ''updates'' promise in maincontent.js
+                    //updates is probably the wrong word.  it gives
+                    //promise a value.
+                    return resolve(tbl);
+                }
+                else {
+                    reject('Error loading table');
+                }
+        })
+    });
 }
+{/* The function: CommentBox(arg) takes a list of objects in the form described in the comment above this export function */}
+{/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */}

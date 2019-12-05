@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { Suspense, useState,useEffect  } from 'react'
 import { ModalProvider, Modal } from '../components/loginModal';
-import { CommentBox, Bookmark } from '../components/scrollingBox';
-import { addBookmark,getBookmarks } from '../components/apiCalls';
+import { Bookmark } from '../components/scrollingBox';
+import { addBookmark, getBookmarks } from '../components/apiCalls';
+
 
 const converted = {
     body: { margin: "0" },
@@ -72,27 +73,45 @@ const converted = {
         justifyContent: "space-around",
         alignItems: "center"
     },
-    
+
 };
 
 
-// some fabricated sample data just to demonstrate the scrollbox functionality
-//if the scrollbox takes an argument that is a list of objects. 
-//
-//The objects should have key:value pairs whose key matches the name of a column in the bookmark table
-var bookmark1 = new Bookmark('Fred Armisten', 'Put a bird on it', '04/21/2011');
-var bookmark1_obj = { title: 'Fred Armisten', url: 'Put a bird on it', description: '04/21/2012' }
-var bookmark2 = new Bookmark('Moses of Abraham', 'Follow \'em bitchesssssssss sssssssYYAAAAA ZZZZZZZZZZs', '09/10/-2981');
-var bookmark3 = new Bookmark('Otis Orion', 'Meow meow meow', '19/91/3981');
-var bookmark4 = new Bookmark('Donald Bush', 'i think ur bad', '09/10/-2981');
-var bookmark5 = new Bookmark('Abraham Washington', 'popadiso pleasio', '09/10/-2981');
-var bookmark6 = new Bookmark('Prndl Rni', 'drip drip drip', '09/10/-2981');
-var bookmarksList = [bookmark1, bookmark1_obj, bookmark2, bookmark3, bookmark4, bookmark5, bookmark6];
-//end of fabricated data
-
-
 export function Main() {
+
+    //one time after pageload***
+    //after post for bookmark data
+    //after receiving response
+    //update the page to show the bookmarks
+    //*** to change when update happens,  add varriable name to list
+    //*** every time that variable changes a rerender will be allowed
+    //   https://stackoverflow.com/a/55481525
+    useEffect(() => getBookmarks().then(updateBookmarkTable),[]);
+
+    // Updates the state of the table with the response from 
+    // the backend
+    function updateBookmarkTable(bookmarks) {
+        setbookmarkContainer(bookmarks);
+        return;
+    }
+
+    function addBookmarkHelper(uid, title, url, description, tags){
+        addBookmark(uid, title, url, description, tags);
+        setBookMarkModal(false);
+    }
+    
+    //the following lines define state for certain dynamic page elements
+    //both have the same form:
+    //const [arg1, arg2] = useState(...)
+    // arg1: the state being set
+    // arg2: a function to update the state
     const [isBookMarkModalOpen, setBookMarkModal] = useState(false);
+    // arg1: isBookMarkModalOpen  ~~>   is the bookmark pop up open?  to start-> no hence false
+    // arg2: setBookMarkModal   ~~>  when the button is clicked we call setBookMarkModal(true)  which sets the state to be true (the popup is open)
+    const [bookmarkContainer,setbookmarkContainer] = useState(<div>some filler</div>);
+    // arg1: bookmarkContainer  ~~> the entire div surrounding the bookmarks from the DB
+    // arg2: When promsie is returned we update the state of the div to be the div containing the elements from the DB
+    
     return (
         <ModalProvider>
             <div className="shell" style={converted[".shell"]}>
@@ -107,36 +126,34 @@ export function Main() {
                         {isBookMarkModalOpen && (
                             <Modal onClose={() => setBookMarkModal(false)} style={converted[".bookmark-modal"]} >
                                 <p>title</p>
-                                <input type="text" name="title" id='title'/>
+                                <input type="text" name="title" id='title' />
                                 <p>url</p>
-                                <input type="text" name="url" id='url'/>
+                                <input type="text" name="url" id='url' />
                                 <p>priority</p>
-                                <input type="text" name="priority" id='priority'/>
+                                <input type="text" name="priority" id='priority' />
                                 <p>description</p>
                                 <input type="text" name="description" id="description" />
                                 <p>tags</p>
-                                <input type="text" name="tags" id="tags"/>
-                                <button name="Addbookmark" onClick={() => addBookmark(
+                                <input type="text" name="tags" id="tags" />
+                                <button name="Addbookmark" onClick={() => addBookmarkHelper(
                                     0,
                                     document.getElementById("title").value,
                                     document.getElementById("url").value,
                                     document.getElementById("description").value,
                                     document.getElementById("tags").value,
-                                    )
-                                    
+                                )
+
                                 }>Add bookmark</button>
                             </Modal>
                         )}
                     </div>
                 </div>
                 <div className="content-main" style={converted[".content-main"]}>
-                        {/* The function: CommentBox(arg) takes a list of objects in the form described in the comment above this export function */}
-                        {/* For now it will only display 3 attributes but this will be modfied later in components/scrollingbox.js */}
-                        <div style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start'}}>{CommentBox(bookmarksList)}</div>
+                    <div id='putboxhere' style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>
+                        <Suspense>{bookmarkContainer}</Suspense>
+                        {/* once the items from the DB are returned load it */}
+                    </div>
                 </div>
-                {/* <button name="loadBookmarks" onClick={() => getBookmarks()}>Load bookmarks</button> */}
-                {/* <button name="Addbookmark" onClick={() => addBookmark()}>Add bookmark</button> */}
-                
             </div>
         </ModalProvider>
 
