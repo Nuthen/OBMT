@@ -107,7 +107,7 @@ export function Landing() {
   //  }
     
     //both login and register "END"  at this function if they are successful.  This function SHOULD
-    //redirect users to the maincontent page. fuck react-router-dom and fuck this framework
+    //redirect users to the maincontent page.
     function authenticateUser(UserID_resp){
         setLoggedInTo(UserID_resp);
         console.log('logged/registered into uid: ',UserID_resp);
@@ -138,7 +138,7 @@ export function Landing() {
     }
 
     
-    //The following function would work if the world wasn't totally fucked
+    //The following function would work if the world wasn't totally
     //aka  we need to update react-router-dom to be able to use useHistory
     //this would let us easily redirect to the main page after we validate the user
 

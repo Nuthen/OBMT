@@ -959,6 +959,7 @@ app.post('/api/getBookmarks', function (req,res) {
                     success: '1',
                     bookmarks: results
                 }
+                console.log(JSON.stringify(results));
                 
                 res.json(returnValue);
             }
@@ -1421,6 +1422,15 @@ app.post('/api/editBookmark', function (req,res) {
                     });
                 } else {
                     // No bookmark found of this BID
+                    BIDReport = [{
+                        status:false,
+                        message:"No bookmark exists with this BID."
+                    }];
+                    var returnValue = {
+                        success: '0',
+                    }
+                    res.send(returnValue);
+                    console.log(BIDReport);
                 }
             }
             console.log(bookmarkReport);
