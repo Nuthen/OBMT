@@ -170,12 +170,16 @@ export function Landing() {
                                 {isModalOpen && (
                                     <Modal onClose={() => setIsModalOpen(false)} style={{ width: 400, textAlign: "center" }}>
                                         <p>Username</p>
-                                        <input type="text" name="name" />
+                                        <input type="text" name="uname" id='uname'/>
                                         <p>password</p>
-                                        <input type="text" name="password" />
+                                        <input type="text" name="password" id='passw'/>
                                         <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link>
                                         {/* <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button> */}
-                                        <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login</button>
+                                        <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login as sam</button>
+                                        <button name="New" onClick={ () => initiateAuthentication(
+                                            document.getElementById("uname").value,
+                                            document.getElementById("passw").value
+                                        )}>Login enter credential</button>
                                     </Modal>
                                 )}
                             </div>
