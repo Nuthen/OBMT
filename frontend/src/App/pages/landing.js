@@ -141,13 +141,13 @@ export function Landing() {
                                         <input type="text" name="uname" id='uname'/>
                                         <p>password</p>
                                         <input type="text" name="password" id='passw'/>
-                                        <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link>
+                                        {/* <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link> */}
                                         {/* <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button> */}
-                                        <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login as sam</button>
+                                        {/* <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login as sam</button> */}
                                         <button name="New" onClick={ () => initiateAuthentication(
                                             document.getElementById("uname").value,
                                             document.getElementById("passw").value
-                                        )}>Login enter credential</button>
+                                        )}>Login</button>
                                     </Modal>
                                 )}
                             </div>
@@ -157,18 +157,22 @@ export function Landing() {
                                 {isRegModalOpen && (
                                     <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
                                         <p>Username</p>
-                                        <input type="text" name="uname"/>
+                                        <input type="text" name="uname" id="reguname"/>
                                         <p>password</p>
-                                        <input type="text" name="password" />
+                                        <input type="text" name="password" id="regpw" />
                                         <p>fname</p>
-                                        <input type="text" name="fname" />
+                                        <input type="text" name="fname" id="regfname" />
                                         <p>lname</p>
-                                        <input type="text" name="lname" />
+                                        <input type="text" name="lname"  id="reglname"/>
                                         <br/>
                                         <div id="register_response"></div>
                                         <button name="registerz" onClick={() => loginRegisterHelper(
-                                            'dum1wtfmate','dum2','dum3','dum4'
-                                        )}>Test Register without filling fields</button>
+                                            document.getElementById("reguname").value,
+                                            document.getElementById("regpw").value,
+                                            document.getElementById("regfname").value,
+                                            document.getElementById("reglname").value
+                                            // 'dum1wtfmate','dum2','dum3','dum4'
+                                        )}>Register</button>
                                     </Modal>
                                 )}
                             </div>
@@ -177,7 +181,6 @@ export function Landing() {
                         <div className="detail-circle" style={converted[".detail-circle"]}>WOW</div>
                     </div>
                 </div>
-                <div>{console.log('is render being called?')}</div>
             </div>
         </ModalProvider>
     )

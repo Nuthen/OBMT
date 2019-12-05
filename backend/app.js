@@ -873,7 +873,7 @@ app.post('/api/CallRegisterLogin', function (req,res) {
                             
                             allSessionUsers[req.sessionID] = {
                                 login: true,
-                                UID: uid
+                                UID: UID
                             };
                             
                             console.log('Return registration report');
