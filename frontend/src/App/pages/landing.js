@@ -3,14 +3,12 @@ import { ModalProvider, Modal } from '../components/loginModal';
 import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
 import { withRouter,Link, Route, Redirect } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-//import App from './App.js';
-
-//export default App;
-//export default withRouter(App);
 
 const converted = {
-    body: { backgroundColor: "#FECB4E" },
-    ".shell": { display: "flex", height: "98vh", flexDirection: "column" },
+    body: { margin: "0",backgroundColor: "#FECB4E"  },
+    html: { boxSizing: "border-box" },
+    "*, *::before, *::after": { boxSizing: "inherit", position: "relative" },
+    ".shell": { display: "flex", top: "0",left: "0", flexDirection: "column",height: "100vh",width: "100vw", },
     ".content-upper": {
         display: "flex",
         height: "70vh",
@@ -102,9 +100,7 @@ export function Landing() {
 
     const [isLoggedIn, setLoggedInTo] = useState(0);
 
-    //function login() {
-//        this.router.push('/maincontent'); // for react-router@3 it would be this.props.router.push('/some/location');
-  //  }
+    
     
     //both login and register "END"  at this function if they are successful.  This function SHOULD
     //redirect users to the maincontent page.
@@ -113,24 +109,7 @@ export function Landing() {
         console.log('logged/registered into uid: ',UserID_resp);
         setIsModalOpen(false);
         window.location = '/maincontent';
-        //await Auth.signOut();
 
-  //userHasAuthenticated(false);
-
-  //props.history.push("/login");
-        //render() {
-    //if (this.state.setIsModalOpen === false) {
-//      return <Redirect to='/maincontent' />;
-  //  }
-        //login();
-        //history.push("/maincontent.js") 
-        //return <Redirect to='/maincontent.js' />
-        //how we sh/could redirect to the main page
-        //redirectNow();
-        //ReactDOM.render(<App/>, document.getElementById('maincontent'));
-  //element,
-  //document.getElementById('root')
-//);
     }
 
     function initiateAuthentication(uname,pw,rd){
@@ -138,18 +117,7 @@ export function Landing() {
     }
 
     
-    //The following function would work if the world wasn't totally
-    //aka  we need to update react-router-dom to be able to use useHistory
-    //this would let us easily redirect to the main page after we validate the user
-
-    // function redirectToMain() {
-    //     let hist = useHistory();
-
-    //     function redirectNow(){
-    //         hist.push('./maincontent');
-    //     }
-    // }
-
+  
 
     return (
         <ModalProvider>
@@ -158,8 +126,8 @@ export function Landing() {
                     <div className="content-upper" style={converted[".content-upper"]} />
                     <div className="content-splitter" style={converted[".content-splitter"]} />
                     <div className="content-lower" style={converted[".content-lower"]}>
-                        <div className="detail-circle" style={converted[".detail-circle"]}>detail1</div>
-                        <div className="detail-circle" style={converted[".detail-circle"]}>detail2</div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>Fun</div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>Fast</div>
                         <div className="access-container" style={converted[".access-container"]}>
 
 
@@ -204,11 +172,9 @@ export function Landing() {
                                     </Modal>
                                 )}
                             </div>
-
-
                         </div>
-                        <div className="detail-circle" style={converted[".detail-circle"]}>detail3</div>
-                        <div className="detail-circle" style={converted[".detail-circle"]}>detail4</div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>Productivity</div>
+                        <div className="detail-circle" style={converted[".detail-circle"]}>WOW</div>
                     </div>
                 </div>
                 <div>{console.log('is render being called?')}</div>
