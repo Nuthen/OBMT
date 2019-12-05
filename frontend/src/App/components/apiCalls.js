@@ -118,8 +118,13 @@ export function CallSearch(searchString) {
         .then(res => {
             if (res.data.success == 1) {
                 //handle returned shit here
-                console.log(res.data.bookmarks)
-                return resolve(res.data.bookmarks);
+                //console.log(res.data.bookmarks)
+                //return resolve(res.data.bookmarks);
+                
+                var obj = res.data.bookmarks;
+                var tbl = CommentBox(obj);
+                return resolve(tbl);
+                
             }
             else {
                 //displayError
@@ -151,9 +156,10 @@ export function addBookmark(uid, title, url, description, tags) {
 }
 
 export function getBookmarks() {
+    console.log("USER ID: " + UserId);
     return new Promise(function (resolve, reject) {
         axios.post(`/api/getBookmarks`, {
-            UID: 0
+            UID: UserId
         })
             .then(res => {
                 //response is the JSON object returned
