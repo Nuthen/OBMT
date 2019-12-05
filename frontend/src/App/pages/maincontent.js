@@ -1,8 +1,8 @@
 import React, { Suspense, useState,useEffect  } from 'react'
 import { ModalProvider, Modal } from '../components/loginModal';
-import { Bookmark } from '../components/scrollingBox';
-import { addBookmark, getBookmarks, didDelete } from '../components/apiCalls';
-
+// import { Bookmark } from '../components/scrollingBox';
+import { addBookmark, getBookmarks, CallSearch} from '../components/apiCalls';
+// import {SearchBar} from '../components/searchbar'
 
 const converted = {
     body: { margin: "0" },
@@ -75,7 +75,35 @@ const converted = {
     },
 
 };
- 
+
+
+// class SearchBar extends React.Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = { value: '' };
+//         this.handleChange = this.handleChange.bind(this);
+//         // this.handleSubmit = this.handleSubmit.bind(this);
+//     }
+//     handleChange(e) {
+//         this.setState({ value: e.target.value });
+//         console.log(this.state.value)
+//     }
+//     // handleSubmit(e) {
+//     //     console.log('this thing happend: ' + this.state.value)
+//     //     e.preventDefualt();
+//     // }
+//     render() {
+//         return (
+//             // <form onSubmit={this.handleSubmit}>
+//                 <input  style={converted[".search"]} type="text" value={this.state.value} onChange={this.handleChange} />
+//                 //{/* <input type="submit" value="Submit" /> */}
+//             //{/* </form> */}
+//         );
+//     }
+// }
+
+
+
 export function Main() {
 
     //one time after pageload***
@@ -115,6 +143,15 @@ export function Main() {
     // arg2: When promsie is returned we update the state of the div to be the div containing the elements from the DB
     
     
+    
+    //part of the search functionality  -->  ***should*** just work once the backend returns lists.
+    //if not it only will need minor tweaks
+    function initiateSearch(str){
+        console.log(str);
+        //the following line may cause errors once the backend is fixxed
+        //you can comment out the .then() part to make any errors stop
+        CallSearch(str).then(updateBookmarkTable);
+    }
 
 
     return (
@@ -124,7 +161,8 @@ export function Main() {
 
                     <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="landing" style={converted[".logo a"]}>OBMT</a></h1></div>
 
-                    <div style={converted[".search-box"]}><input type="search" className="search" style={converted[".search"]} placeholder="search..." /></div>
+                    <div style={converted[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted[".search"]} placeholder="search..." /></div>
+                    {/* <div style={converted[".search-box"]}><SearchBar/></div> */}
 
                     <div style={converted[".bookmark-box"]}>
                         <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted[".add-bm"]}>Add Bookmark</div>

@@ -1,4 +1,4 @@
-import { builtinModules } from 'module';
+// import { builtinModules } from 'module';
 import axios from 'axios';
 import { CommentBox, Bookmark } from '../components/scrollingBox';
 import React, { useCallback } from 'react'
@@ -109,20 +109,24 @@ export function CallDelete(uid, bid) {
 
 //SEARCH CALL
 export function CallSearch(searchString) {
-    axios.post(`/api/search`, {
-        userId: UserId,
-        search: searchString
+
+    return new Promise(function (resolve, reject) {
+    axios.post(`/api/searchBookmarks`, {
+        UID: UserId,
+        SearchString: searchString
     })
         .then(res => {
-            if (res.data[0] == true) {
+            if (res.data.success == 1) {
                 //handle returned shit here
-                return res.data; // returning data array (?) -- Might cause Issues still because 1st field is checked for true / false
+                console.log(res.data.bookmarks)
+                return resolve(res.data.bookmarks);
             }
             else {
                 //displayError
-                return false;
+                return reject(false);
             }
         })
+    });
 }
 
 export function addBookmark(uid, title, url, description, tags) {
