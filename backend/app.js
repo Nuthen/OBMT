@@ -6,6 +6,8 @@ const path = require('path');
 
 const app = express();
 
+const scrape = require('scrape-metadata')
+
 //const port = 3306;
 
 //module.exports = {
@@ -15,7 +17,7 @@ function getHomePage() {
     let query = "SELECT * FROM `bookmark` ORDER BY BID ASC"; 
 
     console.log('Bookmark results');
-        
+
     // execute query
     db.query(query, (err, result) => {
         if (err) {
@@ -24,6 +26,8 @@ function getHomePage() {
         console.log(result);
     });
 }
+
+global.searchQuery = {};
 
 //FOR TESTING REMOVE
 function loginValidation(){
@@ -387,12 +391,46 @@ function addBookmark(){
     
 }
 
-function addTagsToBookmark(){
-    var BID = 112;
-    // new BID determined by max BID + 1 
-    
-    var TagName = 'Ceesharp';
-    //var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
+
+function scrapeTags(BID, URL) {
+    scrape(URL, (err, meta) => {
+        if (meta != null) {
+            var str = "";
+            if (meta.title != null) {
+                str =+ meta.title;
+            }
+            if (meta.description != null) {
+                str =+ " " + meta.description;
+            } else if (meta.twitterDescription != null) {
+                str =+ " " + meta.twitterDescription;
+            }
+            console.log("META: " + str);
+            var splits = meta.title.split(/[.,\/ -!()]/);
+            for (var i = 0; i < splits.length; i++) {
+                console.log("Word:" + splits[i]);
+                if (splits[i] == "") {
+                    console.log("empty!");
+                } else if (splits[i] == " ") {
+                    console.log("space!");
+                }
+            }
+
+            let unique = [...new Set(splits)]; // put it into a set to avoid duplicates
+            console.log(unique)
+
+            /*function addEachTag(tag) {
+                console.log("(1)BID: " + BID + ", tag: " + tag);
+                addTagToBookmark(BID, tag)
+            }
+
+            unique.forEach(addEachTag);*/
+            addNewTags(BID, unique);
+        }
+    })
+}
+
+function addNewTags(BID, Tags) {
+    //console.log("(2)BID: " + BID + ", tag: " + TagName); 
     var maxQuery = "SELECT MAX(TID) as TID FROM `bkhastag`";
     
     var tagReport;
@@ -416,50 +454,66 @@ function addTagsToBookmark(){
             
             console.log("TID: " + newTID);
             
-            // Insert new TID
-            var insertTag = "INSERT INTO bkhastag(BID, TID) VALUES (" + BID + ", " + newTID + ")";
+            function addEachTag(tag) {
+                console.log("(1)TID: " + newTID + ", tag: " + tag);
+                addTagToBookmark(BID, newTID, tag)
+                
+                newTID += 1;
+            }
 
-            console.log(insertTag);
-            db.query(insertTag, (err2, inserted) => {
+            Tags.forEach(addEachTag);
+        }
+        console.log(tagReport);
+    });
+}
+
+function addTagToBookmark(BID, TID, TagName) {   
+    console.log("TID: " + TID);
+            
+    // Insert new TID
+    var insertTag = "INSERT INTO bkhastag(BID, TID) VALUES (" + BID + ", " + TID + ")";
+
+    console.log(insertTag);
+    db.query(insertTag, (err2, inserted) => {
+        if (err2) {
+            //throw err;
+            tagReport = [{
+                status:false,
+                message:"Error creating Tag."
+            }];
+            console.log(tagReport);
+        }
+
+        else{
+            // Also add Tag Name to tag table
+            var insertTagName = "INSERT INTO tag(TID, TagName) VALUES (" + TID + ", '" + TagName + "')";
+
+            console.log(insertTagName);
+            db.query(insertTagName, (err2, inserted) => {
                 if (err2) {
                     //throw err;
+                    console.log(err2);
                     tagReport = [{
                         status:false,
-                        message:"Error creating Tag."
+                        message:"Error creating Tag Name."
                     }];
+                    console.log(tagReport);
                 }
 
                 else{
-                    // Also add Tag Name to tag table
-                    var insertTagName = "INSERT INTO tag(TID, TagName) VALUES (" + newTID + ", '" + TagName + "')";
-
-                    console.log(insertTagName);
-                    db.query(insertTagName, (err2, inserted) => {
-                        if (err2) {
-                            //throw err;
-                            console.log(err2);
-                            tagReport = [{
-                                status:false,
-                                message:"Error creating Tag Name."
-                            }];
-                        }
-
-                        else{
-                            tagReport = [{
-                                status:true,
-                                message:"Tag Name added."
-                            }];
-                        }
-                    });
-                    console.log(tagReport);
-                    
-                    
                     tagReport = [{
                         status:true,
-                        message:"Tag added."
+                        message:"Tag Name added."
                     }];
+                    console.log(tagReport);
                 }
             });
+                    
+                    
+            tagReport = [{
+                status:true,
+                message:"Tag added."
+            }];
             console.log(tagReport);
         }
     });
@@ -822,7 +876,11 @@ app.post('/api/getBookmarks', function (req,res) {
     if (UID == null) {
         console.log("Null UID");
         console.log("Get bookmarks failed due to null parameter.");
-        res.send('0');
+        
+        var returnValue = {
+            success: '0',
+        }
+        res.json(returnValue);
     } else {
         var bookmarkQuery = "SELECT * FROM `bookmark` WHERE UID = '" + UID + "'";
         
@@ -834,7 +892,11 @@ app.post('/api/getBookmarks', function (req,res) {
                     status:false,
                     message:"Error retrieving bookmarks."
                 }];
-                res.send('0');
+                
+                var returnValue = {
+                    success: '0',
+                }
+                res.json(returnValue);
             }
 
             else{
@@ -849,6 +911,204 @@ app.post('/api/getBookmarks', function (req,res) {
                 }
                 
                 res.json(returnValue);
+            }
+        });
+    }
+});
+
+function getTags(UID, BID) {
+    var tagQuery = "SELECT * FROM `bkhastag` WHERE BID = '" + BID + "'";
+        
+    var bookmarkReport;
+    
+    //var foundTagNames = [];
+        
+    //console.log(tagQuery);
+    // Query to find all Tag ID based on the bookmark
+    db.query(tagQuery, (error, result, fields) => {
+        if (error) {
+            bookmarkReport = [{
+                status:false,
+                message:"Error finding tag id."
+            }];
+            var returnValue = {
+                success: '0',
+            }
+            res.send(returnValue);
+        } else {              
+            for (var i = 0; i < result.length; i++) {
+                var TID = result[i].TID;
+                    
+                if (TID != null) {
+                    var getTagNameQuery = "SELECT `TagName` FROM `tag` WHERE TID = '" + TID + "'";
+                    console.log(getTagNameQuery);
+                        
+                    db.query(getTagNameQuery, (error, tagName, fields) => {
+                        if (error) {
+                            bookmarkReport = [{
+                                status:false,
+                                message:"Error gettings TagName."
+                            }];
+                            
+                            console.log(bookmarkReport);
+                        } else {
+                            bookmarkReport = [{
+                                status:true,
+                                message:"Success getting TagName."
+                            }];
+                            
+                            //console.log("My tag name: " + JSON.stringify(tagName));
+                            //foundTagNames.push(tagName["TagName"]);
+                            if (global.searchQuery[UID][BID] == null) {
+                                global.searchQuery[UID][BID] = []
+                            }
+                            global.searchQuery[UID][BID].push(tagName);
+                            //if (global.searchQuery[UID][BID] != null) {
+                            //    console.log(JSON.parse(JSON.stringify(global.searchQuery[UID][BID])));
+                            //}
+                        }
+                    });
+                }
+            }
+        }
+    });
+    
+    //console.log("WHOA: " + foundTagNames)
+    
+    //return foundTagNames;
+}
+
+async function sendSearchResults(res, UID, bookmarks, SearchString) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    //console.log("2 seconds passed!");
+    
+    var searchStrings = SearchString.split(/[.,\/ -!()]/);
+    
+    var BIDToReturn = {};
+    var returnBID = [];
+    
+    for (BID in global.searchQuery[UID]) {
+        var searchScore = 0;
+        console.log("BID: " + BID);
+        console.log(JSON.parse(JSON.stringify(global.searchQuery[UID][BID])));
+        
+        var tags = JSON.parse(JSON.stringify(global.searchQuery[UID][BID]));
+        for (var i = 0; i < tags.length; i++) {
+            console.log("Parsed tag: " + JSON.stringify(tags[i][0]));
+            
+            for (var j = 0; j < searchStrings.length; j++) {
+                if (tags[i][0] != null) {
+                    //console.log(tags[i][0].TagName + " vs " + searchStrings[j])
+                    if (tags[i][0].TagName.toLowerCase() == searchStrings[j].toLowerCase() && searchStrings[j] != "") {
+                        searchScore += 1;
+                    }
+                }
+            }
+        }
+        console.log("Search score: " + searchScore)
+        
+        if (searchScore > 0) {
+            BIDToReturn[BID] = searchScore;
+            returnBID.push(BID);
+        }
+    }
+    
+    returnBID.sort(function(a, b){return BIDToReturn[b]-BIDToReturn[a]});
+    
+    console.log(returnBID);
+    
+    //res.send()
+    //return returnBID;
+    
+    var returnBookmarks = []
+    
+    for (var i = 0; i < bookmarks.length; i++) {
+        //console.log(bookmarks[i].BID);
+        //console.log(JSON.stringify(bookmarks[i].BID));
+        for (var j = 0; j < returnBID.length; j++) {
+            console.log(bookmarks[i].BID + " vs " + returnBID[j]);
+            if (bookmarks[i].BID == returnBID[j]) {
+                bookmarks[i].Priority = j;
+                returnBookmarks.push(bookmarks[i]);
+            }
+        }
+    }
+    
+    var returnValue = {
+        success: '1',
+        bookmarks: returnBookmarks
+    }
+                
+    res.json(returnValue);
+}
+
+// Takes 2 seconds to try to retrieve all tags, then calculates which bookmarks best
+// match the search string.
+// It returns in the same format as getBookmarks, except Priority is filled out based on most relevant.
+// Lower priority = more relevant. Priority will begin at 0-max and will not skip any values (goes up one at a time).
+// And the totally unrelevant bookmarks (0 keyword matches) are not returned.
+app.post('/api/searchBookmarks', function (req,res) {
+    var UID = req.body.UID;
+    var SearchString = req.body.SearchString;
+    
+    global.searchQuery[UID] = {}
+    
+    if (UID == null) {
+        console.log("Null UID");
+        console.log("Get bookmarks failed due to null parameter.");
+        
+        var returnValue = {
+            success: '0',
+        }
+        res.json(returnValue);
+    } else if (SearchString == null) {
+        console.log("Null SearchString");
+        console.log("Get bookmarks failed due to null parameter.");
+        
+        var returnValue = {
+            success: '0',
+        }
+        res.json(returnValue);
+    } else {
+        var bookmarkQuery = "SELECT * FROM `bookmark` WHERE UID = '" + UID + "'";
+        
+        // Query to get all of the user's bookmarks
+        db.query(bookmarkQuery, (err2, results) => {
+            if (err2) {
+                //throw err;
+                bookmarkReport = [{
+                    status:false,
+                    message:"Error retrieving bookmarks."
+                }];
+                
+                var returnValue = {
+                    success: '0',
+                }
+                res.json(returnValue);
+            }
+
+            else{
+                bookmarkReport = [{
+                    status:true,
+                    message:"Bookmarks retrieved."
+                }];
+                
+                //var returnValue = {
+                //    success: '1',
+                //    bookmarks: results
+                //}
+                
+                //res.json(returnValue);
+                
+                // Alright so we have all the user's bookmarks. But we want to narrow it down by tag.
+                // Each bookmark has a BID.
+                console.log("Bookmarks found: " + results.length);
+                for (var i = 0; i < results.length; i++) {
+                    var bookmarkTags = getTags(UID, results[i].BID);
+                    console.log(bookmarkTags);
+                }
+    
+                sendSearchResults(res, UID, results, SearchString);
             }
         });
     }
@@ -926,6 +1186,8 @@ app.post('/api/addBookmark', function (req,res) {
                 if (result[0].BID != null) {            
                     newBID = result[0].BID + 1;
                 }
+        
+                scrapeTags(newBID, URL);
 
                 // Query to find if BID already created
                 db.query(bookmarkQuery, (error, results) => {
