@@ -44,7 +44,7 @@ const Container = styled.div`
 `;
 
 const Overlay = styled.div`
-  animation: ${fadeIn} 200ms ease-out;
+  animation: ${fadeIn} 600ms ease-out;
   position: absolute;
   top: 0;
   left: 0;
@@ -54,8 +54,10 @@ const Overlay = styled.div`
 `;
 
 const Dialog = styled.div`
-  background: white;
-  border-radius: 5px;
+  border: solid;
+  background-border:#0982AF; 
+  background: seashell;
+  border-radius: 15px;
   padding: 20px;
   position: absolute;
   top: 50%;
