@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
 import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
 import { withRouter,Link, Route, Redirect } from 'react-router-dom';
+import ReactDOM from 'react-dom';
+//import App from './App.js';
+
+//export default App;
+//export default withRouter(App);
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -75,6 +80,11 @@ const converted = {
     }
 };
 
+class Welcome extends React.Component {
+    render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
 
 export function Landing() {
     const [isRegModalOpen, setRegModal] = useState(false);
@@ -92,15 +102,35 @@ export function Landing() {
 
     const [isLoggedIn, setLoggedInTo] = useState(0);
 
-
+    //function login() {
+//        this.router.push('/maincontent'); // for react-router@3 it would be this.props.router.push('/some/location');
+  //  }
+    
     //both login and register "END"  at this function if they are successful.  This function SHOULD
     //redirect users to the maincontent page. fuck react-router-dom and fuck this framework
     function authenticateUser(UserID_resp){
         setLoggedInTo(UserID_resp);
         console.log('logged/registered into uid: ',UserID_resp);
         setIsModalOpen(false);
+        window.location = '/maincontent';
+        //await Auth.signOut();
+
+  //userHasAuthenticated(false);
+
+  //props.history.push("/login");
+        //render() {
+    //if (this.state.setIsModalOpen === false) {
+//      return <Redirect to='/maincontent' />;
+  //  }
+        //login();
+        //history.push("/maincontent.js") 
+        //return <Redirect to='/maincontent.js' />
         //how we sh/could redirect to the main page
         //redirectNow();
+        //ReactDOM.render(<App/>, document.getElementById('maincontent'));
+  //element,
+  //document.getElementById('root')
+//);
     }
 
     function initiateAuthentication(uname,pw,rd){
@@ -182,6 +212,4 @@ export function Landing() {
         </ModalProvider>
     )
 }
-
-
 
