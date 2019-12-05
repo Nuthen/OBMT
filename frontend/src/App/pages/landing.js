@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
 import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
-import { Link, Route, Redirect } from 'react-router-dom';
+import { withRouter,Link, Route, Redirect } from 'react-router-dom';
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -86,25 +86,31 @@ export function Landing() {
     }
 
     function loginRegisterHelper(name, password, fname, lname){
-        CallRegisterLogin(name, password, fname, lname);
-        setIsModalOpen(false);
+        CallRegisterLogin(name, password, fname, lname).then(authenticateUser);
+        // setIsModalOpen(false);
     }
 
     const [isLoggedIn, setLoggedInTo] = useState(0);
 
+
+    //both login and register "END"  at this function if they are successful.  This function SHOULD
+    //redirect users to the maincontent page. fuck react-router-dom and fuck this framework
     function authenticateUser(UserID_resp){
         setLoggedInTo(UserID_resp);
-        console.log('logged into uid: ',UserID_resp);
-        //the below line won't work --> need a workaround
-        // return(<Link to={'./maincontent'}></Link>);
+        console.log('logged/registered into uid: ',UserID_resp);
         setIsModalOpen(false);
-        
-        return <Redirect push to='./pages/maincontent' />
+        //how we sh/could redirect to the main page
+        //redirectNow();
     }
+
+    function initiateAuthentication(uname,pw,rd){
+        CallLogin(uname,pw).then(authenticateUser);
+    }
+
     
-    function initiateAuthentication(uname,pw){
-        CallLogin(uname,pw).then(authenticateUser);        
-    }
+    //The following function would work if the world wasn't totally fucked
+    //aka  we need to update react-router-dom to be able to use useHistory
+    //this would let us easily redirect to the main page after we validate the user
 
     // function redirectToMain() {
     //     let hist = useHistory();
@@ -159,7 +165,7 @@ export function Landing() {
                                         <br/>
                                         <div id="register_response"></div>
                                         <button name="registerz" onClick={() => loginRegisterHelper(
-                                            'dum1','dum2','dum3','dum4'
+                                            'dum1wtfmate','dum2','dum3','dum4'
                                         )}>Test Register without filling fields</button>
                                     </Modal>
                                 )}
@@ -171,6 +177,7 @@ export function Landing() {
                         <div className="detail-circle" style={converted[".detail-circle"]}>detail4</div>
                     </div>
                 </div>
+                <div>{console.log('is render being called?')}</div>
             </div>
         </ModalProvider>
     )
