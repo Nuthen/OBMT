@@ -1,5 +1,6 @@
-import React from 'react';
-
+import React, {useState, useContext} from 'react';
+import {CallDelete, CallRegisterBookmark} from './apiCalls'
+import { ModalProvider, Modal } from '../components/loginModal';
 
 
 export class Bookmark {
@@ -8,6 +9,13 @@ export class Bookmark {
         this.URL = URL;
         this.Description = Description;
     }
+}
+
+const converted = {
+    ".bookmark-modal": {
+        width: 400,
+        textAlign: "center",
+    },
 }
 
 function User(props) {
@@ -27,16 +35,31 @@ function TextBody(props) {
     );
 }
 
+
+
 function CommentBubble(props) {
+    function deleteBM(){
+        CallDelete(props.UID,props.BID);
+    }
+
+    function modifyBM(){
+        console.log(props);
+    }
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', width:'fit', border: 'solid', borderColor: 'blue',backgroundColor:'#ffe6d5', justifyContent: 'space-between',borderRadius:'25px' }}>
             {User(props)}
             {TextBody(props)}
+            <div style={{display:'flex', justifyContent:'center'}}>
+                <button onClick={() => deleteBM()}>delete</button>
+                <div><button onClick={() => modifyBM()}>modify</button></div>
+            </div>
         </div>
     );
 }
 
 export function CommentBox(props) {
+
     return (
         <ul style={{ display: 'flex', width: '100%', flexDirection: 'column', listStyleType: 'none', overflowY: 'scroll',backgroundColor:'#629e1d',alignItems:'center',borderRadius:'25px',scrollBehavior:'smooth'}}>{
             props.map(itm => {
