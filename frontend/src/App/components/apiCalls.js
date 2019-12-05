@@ -90,6 +90,7 @@ export function CallRegisterBookmark(bid, t, u, p, desc) {
 
 //DELETE CALL
 export function CallDelete(uid, bid) {
+    return new Promise(function (resolve, reject) {
     axios.post(`/api/deleteBookmark`, {
         userId: uid,
         BID: bid
@@ -98,14 +99,15 @@ export function CallDelete(uid, bid) {
             if (res.data.success == 1) {
                 //displaySuccess
                 console.log('it worked')
-                return true;
+                return resolve(true);
             }
             else {
                 //displayError
                 console.log('it did not work')
-                return false;
+                return reject(false);
             }
         })
+    });
 }
 
 //SEARCH CALL

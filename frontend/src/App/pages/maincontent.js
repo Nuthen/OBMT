@@ -111,7 +111,8 @@ export function Main() {
     const [nestedTitle, setNestedTitle] = useState('');
     const [nestedURL, setnestedURL] = useState('');
     const [nestedDesc, setnestedDesc] = useState('');
-    var nestedModalArr = [isNestedModalOpen, setNestedModal, setnestedBID, setNestedTitle, setnestedURL, setnestedDesc];
+    const [nestedDelete, setnestedDelete] = useState(false)
+    var nestedModalArr = [isNestedModalOpen, setNestedModal, setnestedBID, setNestedTitle, setnestedURL, setnestedDesc,setnestedDelete];
 
     //one time after pageload***
     //after post for bookmark data
@@ -164,6 +165,11 @@ export function Main() {
     function editBMHelper(resp){
         setNestedModal(false);
         return getBookmarks();
+    }
+
+    function delBMHelper(){
+        setnestedDelete(false);
+        return getBookmarks(nestedModalArr).then(updateBookmarkTable);
     }
 
 
@@ -221,6 +227,10 @@ export function Main() {
                             <button name="mod_bookmark" onClick={() => CallRegisterBookmark({nestedBID},{nestedTitle},{nestedURL},1,{nestedDesc}).then(editBMHelper).then(updateBookmarkTable)}>Submit</button>
                         </Modal>
                         )
+                }
+                {nestedDelete && (
+                    delBMHelper()
+                )
                 }
             </div>
         </ModalProvider>

@@ -51,7 +51,13 @@ function TextBody(props) {
 
 function CommentBubble(props, nestedModalArr) {
     function deleteBM() {
-        CallDelete(props.UID, props.BID);
+        CallDelete(props.UID, props.BID).then(afterDelResp);
+        return;
+    }
+
+    function afterDelResp(resp){
+        nestedModalArr[6](true);
+        return;
     }
 
     function setParentStates(){
