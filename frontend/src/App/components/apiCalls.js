@@ -46,9 +46,9 @@ export function CallRegisterLogin(name, pw, fName, lName) {
         lastname: lName
     })
         .then(res => {
-            if (res.data[0] == true) {
+            if (res.data[0].success == 1) {
                 console.log('it worked');
-                UserId = res.data[1];
+                UserId = res.data[0].message;
                 return resolve(UserId);
             }
             else {
