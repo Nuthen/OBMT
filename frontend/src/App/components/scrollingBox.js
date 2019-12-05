@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {CallDelete, CallRegisterBookmark} from './apiCalls'
-import { ModalProvider, Modal } from '../components/loginModal';
+// import { ModalProvider, Modal } from '../components/loginModal';
 
 
 export class Bookmark {
@@ -51,8 +51,8 @@ function CommentBubble(props) {
             {User(props)}
             {TextBody(props)}
             <div style={{display:'flex', justifyContent:'center'}}>
-                <button onClick={() => deleteBM()}>delete</button>
-                <div><button onClick={() => modifyBM()}>modify</button></div>
+                <button onClick={() => deleteBM()}>delete(no auto refresh yet)</button>
+                <div><button onClick={() => modifyBM()}>modify(not functional)</button></div>
             </div>
         </div>
     );
