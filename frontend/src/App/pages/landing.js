@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModalProvider, Modal } from '../components/loginModal';
 import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
-import { Link } from 'react-router-dom';
+import { Link, Route, Redirect } from 'react-router-dom';
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
@@ -90,6 +90,30 @@ export function Landing() {
         setIsModalOpen(false);
     }
 
+    const [isLoggedIn, setLoggedInTo] = useState(0);
+
+    function authenticateUser(UserID_resp){
+        setLoggedInTo(UserID_resp);
+        console.log('logged into uid: ',UserID_resp);
+        //the below line won't work --> need a workaround
+        // return(<Link to={'./maincontent'}></Link>);
+        setIsModalOpen(false);
+        
+        return <Redirect push to='./pages/maincontent' />
+    }
+    
+    function initiateAuthentication(uname,pw){
+        CallLogin(uname,pw).then(authenticateUser);        
+    }
+
+    // function redirectToMain() {
+    //     let hist = useHistory();
+
+    //     function redirectNow(){
+    //         hist.push('./maincontent');
+    //     }
+    // }
+
 
     return (
         <ModalProvider>
@@ -114,7 +138,8 @@ export function Landing() {
                                         <p>password</p>
                                         <input type="text" name="password" />
                                         <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link>
-                                        <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button>
+                                        {/* <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button> */}
+                                        <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login</button>
                                     </Modal>
                                 )}
                             </div>
