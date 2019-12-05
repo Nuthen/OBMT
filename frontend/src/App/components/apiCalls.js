@@ -60,26 +60,27 @@ export function CallRegisterLogin(name, pw, fName, lName) {
     });
 }
 
-// ADD/EDIT CALL
-export function CallRegisterBookmark(bid, t, u, p, desc, d, tag) {
+// EDIT CALL
+export function CallRegisterBookmark(bid, t, u, p, desc) {
     console.log('good')
-    axios.post(`/api/modify`, {
-        userId: UserId,
-        bid: builtinModules,
-        title: t,
-        url: u,
-        priority: p,
-        description: desc,
-        date: d,
-        tags: tag
+    axios.post(`/api/editBookmark`, {
+        // userId: UserId,
+        BID: bid,
+        Title: t,
+        URL: u,
+        Priority: p,
+        Description: desc,
+        // date: d,
+        // tags: tag
     })
         .then(res => {
-            if (res.data[0] == true) {
+            if (res.data.success == 1) {
                 //displaySuccess
+                console.log('it worked');
                 return true;
             }
             else {
-                console.log('fail')
+                console.log('fail  :( edit bm)')
                 //displayError
                 return false;
             }
@@ -88,9 +89,6 @@ export function CallRegisterBookmark(bid, t, u, p, desc, d, tag) {
 
 //DELETE CALL
 export function CallDelete(uid, bid) {
-    console.log('inside calldelete:')
-    console.log('UID: ', uid);
-    console.log('BID: ', bid);
     axios.post(`/api/deleteBookmark`, {
         userId: uid,
         BID: bid
