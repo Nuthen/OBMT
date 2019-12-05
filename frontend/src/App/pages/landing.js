@@ -20,7 +20,7 @@ const converted = {
         justifyContent: "space-around",
         alignItems: "center",
         backgroundImage: 'url("./img1.png")',
-        backgroundSize: "contain",
+        backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         maxWidth: "100%"
     },
