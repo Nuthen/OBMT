@@ -10,39 +10,40 @@ import ReactDOM from 'react-dom';
 
 const converted = {
     body: { backgroundColor: "#FECB4E" },
-    ".shell": { display: "flex", height: "98vh", flexDirection: "column" },
+    ".shell": { display: "flex", height: "100vh", flexDirection: "column" },
     ".content-upper": {
         display: "flex",
-        height: "70vh",
-        borderStyle: "solid",
-        flexDirection: "row",
-        backgroundColor: "#0982AF",
-        borderRadius: "25px",
-        borderColor: "#707070",
-        justifyContent: "space-around",
+        height: "70%",
+        width: "100%",
+        //borderStyle: "solid",
+        flexDirection: "column",
+        //backgroundColor: "#0982AF",
+        //borderRadius: "20px",
+        //borderColor: "#707070",
         alignItems: "center",
-        backgroundImage: 'url("./img1.png")',
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        maxWidth: "100%"
+        //justifyContent: "space-around",
+        //backgroundImage: 'url("./img1.png")',
+        //backgroundSize: "contain",
+        //backgroundRepeat: "no-repeat",
     },
     ".content-lower": {
         display: "flex",
-        height: "30vh",
+        height: "30%",
         borderStyle: "solid",
         flexDirection: "row",
         backgroundColor: "#0982AF",
         borderRadius: "25px",
         borderColor: "#707070",
+        borderWidth: 1,
         justifyContent: "space-around",
         alignItems: "center"
     },
-    ".content-splitter": { display: "flex", height: "5vh" },
+    ".content-splitter": { display: "flex", height: "2vh" },
     ".detail-circle": {
         display: "flex",
         justifyContent: "space-around",
         alignItems: "center",
-        height: "67%",
+        height: "70%",
         width: "10%",
         borderStyle: "solid",
         borderRadius: "50%",
@@ -155,7 +156,7 @@ export function Landing() {
         <ModalProvider>
             <div className="body" style={converted.body}>
                 <div className="shell" style={converted[".shell"]}>
-                    <div className="content-upper" style={converted[".content-upper"]} />
+                    <div className="content-upper" style={converted[".content-upper"]}><img src="./img1.png" Width="100%" /></div> 
                     <div className="content-splitter" style={converted[".content-splitter"]} />
                     <div className="content-lower" style={converted[".content-lower"]}>
                         <div className="detail-circle" style={converted[".detail-circle"]}>detail1</div>
