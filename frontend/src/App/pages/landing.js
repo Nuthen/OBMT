@@ -136,17 +136,17 @@ export function Landing() {
                                 <div onClick={() => setIsModalOpen(true)}>Login</div>
                                 {isModalOpen && (
                                     <Modal onClose={() => setIsModalOpen(false)} style={{ width: 400, textAlign: "center" }}>
-                                        <p>Username</p>
-                                        <input type="text" name="uname" id='uname'/>
-                                        <p>password</p>
-                                        <input type="text" name="password" id='passw'/>
+                                        <p>Username: &nbsp; &nbsp;
+                                        <input type="text" name="uname" id='uname'/></p>
+                                        <p>Password:   &nbsp; &nbsp;&nbsp;
+                                        <input type="text" name="password" id='passw'/></p>
                                         {/* <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link> */}
                                         {/* <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button> */}
                                         {/* <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login as sam</button> */}
-                                        <button name="New" onClick={ () => initiateAuthentication(
+                                        <p><button name="New" onClick={ () => initiateAuthentication(
                                             document.getElementById("uname").value,
                                             document.getElementById("passw").value
-                                        )}>Login</button>
+                                        )}>Login</button>&nbsp;<button onClick={() => setIsModalOpen(false)}>Exit</button></p>
                                     </Modal>
                                 )}
                             </div>
@@ -155,23 +155,23 @@ export function Landing() {
                                 <div onClick={() => setRegModal(true)}>Register</div>
                                 {isRegModalOpen && (
                                     <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
-                                        <p>Username</p>
-                                        <input type="text" name="uname" id="reguname"/>
-                                        <p>password</p>
-                                        <input type="text" name="password" id="regpw" />
-                                        <p>fname</p>
-                                        <input type="text" name="fname" id="regfname" />
-                                        <p>lname</p>
-                                        <input type="text" name="lname"  id="reglname"/>
+                                        <p>Username: &nbsp;&nbsp;
+                                        <input type="text" name="uname" id="reguname"/></p>
+                                        <p>Password: &nbsp;&nbsp;&nbsp;
+                                        <input type="text" name="password" id="regpw" /></p>
+                                        <p>First Name: &nbsp;
+                                        <input type="text" name="fname" id="regfname" /></p>
+                                        <p>Last Name: &nbsp;
+                                        <input type="text" name="lname"  id="reglname"/></p>
                                         <br/>
                                         <div id="register_response"></div>
-                                        <button name="registerz" onClick={() => loginRegisterHelper(
+                                        <p><button name="registerz" onClick={() => loginRegisterHelper(
                                             document.getElementById("reguname").value,
                                             document.getElementById("regpw").value,
                                             document.getElementById("regfname").value,
                                             document.getElementById("reglname").value
                                             // 'dum1wtfmate','dum2','dum3','dum4'
-                                        )}>Register</button>
+                                        )}>Register</button>&nbsp;<button onClick={() => setRegModal(false)}>Exit</button></p>
                                     </Modal>
                                 )}
                             </div>
