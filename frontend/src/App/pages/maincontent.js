@@ -1,7 +1,7 @@
-import React, { Suspense, useState,useEffect  } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import { ModalProvider, Modal } from '../components/loginModal';
 // import { Bookmark } from '../components/scrollingBox';
-import { addBookmark, getBookmarks, CallSearch} from '../components/apiCalls';
+import { addBookmark, getBookmarks, CallSearch, CallRegisterBookmark } from '../components/apiCalls';
 // import {SearchBar} from '../components/searchbar'
 
 const converted = {
@@ -77,34 +77,16 @@ const converted = {
 };
 
 
-// class SearchBar extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = { value: '' };
-//         this.handleChange = this.handleChange.bind(this);
-//         // this.handleSubmit = this.handleSubmit.bind(this);
-//     }
-//     handleChange(e) {
-//         this.setState({ value: e.target.value });
-//         console.log(this.state.value)
-//     }
-//     // handleSubmit(e) {
-//     //     console.log('this thing happend: ' + this.state.value)
-//     //     e.preventDefualt();
-//     // }
-//     render() {
-//         return (
-//             // <form onSubmit={this.handleSubmit}>
-//                 <input  style={converted[".search"]} type="text" value={this.state.value} onChange={this.handleChange} />
-//                 //{/* <input type="submit" value="Submit" /> */}
-//             //{/* </form> */}
-//         );
-//     }
-// }
-
-
 
 export function Main() {
+
+    const [isNestedModalOpen, setNestedModal] = useState(false);
+    const [nestedBID, setnestedBID] = useState('');
+    const [nestedTitle, setNestedTitle] = useState('');
+    const [nestedURL, setnestedURL] = useState('');
+    const [nestedDesc, setnestedDesc] = useState('');
+    const [nestedDelete, setnestedDelete] = useState(false)
+    var nestedModalArr = [isNestedModalOpen, setNestedModal, setnestedBID, setNestedTitle, setnestedURL, setnestedDesc,setnestedDelete];
 
     //one time after pageload***
     //after post for bookmark data
@@ -113,7 +95,7 @@ export function Main() {
     //*** to change when update happens,  add varriable name to list
     //*** every time that variable changes a rerender will be allowed
     //   https://stackoverflow.com/a/55481525
-    useEffect(() => getBookmarks().then(updateBookmarkTable),[]);
+    useEffect(() => getBookmarks(nestedModalArr).then(updateBookmarkTable), []);
 
 
 
@@ -125,11 +107,11 @@ export function Main() {
     }
 
     //after a bookmark is added to backend and we receive response: close modal and refresh bookmark list
-    function addBookmarkHelper(resp){
+    function addBookmarkHelper(resp) {
         setBookMarkModal(false);
-        return getBookmarks();        
+        return getBookmarks();
     }
-    
+
     //the following lines define state for certain dynamic page elements
     //both have the same form:
     //const [arg1, arg2] = useState(...)
@@ -138,22 +120,30 @@ export function Main() {
     const [isBookMarkModalOpen, setBookMarkModal] = useState(false);
     // arg1: isBookMarkModalOpen  ~~>   is the bookmark pop up open?  to start-> no hence false
     // arg2: setBookMarkModal   ~~>  when the button is clicked we call setBookMarkModal(true)  which sets the state to be true (the popup is open)
-    const [bookmarkContainer,setbookmarkContainer] = useState(<div>some filler</div>);
+    const [bookmarkContainer, setbookmarkContainer] = useState(<div>some filler</div>);
     // arg1: bookmarkContainer  ~~> the entire div surrounding the bookmarks from the DB
     // arg2: When promsie is returned we update the state of the div to be the div containing the elements from the DB
-    
-    
-    
+
+
     //part of the search functionality  -->  ***should*** just work once the backend returns lists.
     //if not it only will need minor tweaks
-    function initiateSearch(str){
-        if(str.slice(-1) == ' '){
+    function initiateSearch(str) {
+        if (str.slice(-1) == ' ') {
             console.log(str);
             //the following line may cause errors once the backend is fixxed
             //you can comment out the .then() part to make any errors stop
             CallSearch(str).then(updateBookmarkTable);
         }
-        
+    }
+
+    function editBMHelper(resp){
+        setNestedModal(false);
+        return getBookmarks();
+    }
+
+    function delBMHelper(){
+        setnestedDelete(false);
+        return getBookmarks(nestedModalArr).then(updateBookmarkTable);
     }
 
 
@@ -165,8 +155,6 @@ export function Main() {
                     <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="landing" style={converted[".logo a"]}>OBMT</a></h1></div>
 
                     <div style={converted[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted[".search"]} placeholder="search..." /></div>
-                    {/* <div style={converted[".search-box"]}><SearchBar/></div> */}
-
                     <div style={converted[".bookmark-box"]}>
                         <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted[".add-bm"]}>Add Bookmark</div>
                         {isBookMarkModalOpen && (
@@ -188,19 +176,40 @@ export function Main() {
                                     document.getElementById("description").value,
                                     document.getElementById("tags").value,
                                 ).then(addBookmarkHelper).then(updateBookmarkTable)
-
                                 }>Add bookmark</button>
                             </Modal>
                         )}
                     </div>
                 </div>
+                <div>{console.log(isNestedModalOpen)}</div>
                 <div className="content-main" style={converted[".content-main"]}>
                     <div id='putboxhere' style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>
                         <Suspense>{bookmarkContainer}</Suspense>
                     </div>
                 </div>
+                {isNestedModalOpen && (
+                        <Modal onClose={() => setNestedModal(false)} style={converted[".bookmark_modal"]}>
+                            {/* <p>{nestedBID}</p> */}
+                            <form>
+                            <p>Title</p>
+                            <input type="text" id="mod_title" value={nestedTitle} onChange={(e) => setNestedTitle(e.target.value)} />
+                            <p>URL</p>
+                            <input type="text" id="mod_url" value={nestedURL} onChange={(e) => setnestedURL(e.target.value)} />
+                            <p>Description</p>
+                            <input type="text" id="mod_desc" value={nestedDesc} onChange={(e) => setnestedDesc(e.target.value)} />
+                            </form>
+                            <button name="mod_bookmark" onClick={() => CallRegisterBookmark({nestedBID},{nestedTitle},{nestedURL},1,{nestedDesc}).then(editBMHelper).then(updateBookmarkTable)}>Submit</button>
+                        </Modal>
+                        )
+                }
+                {nestedDelete && (
+                    delBMHelper()
+                )
+                }
             </div>
         </ModalProvider>
 
     )
 }
+
+
