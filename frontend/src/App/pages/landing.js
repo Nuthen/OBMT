@@ -139,7 +139,7 @@ export function Landing() {
                                         <p>Username: &nbsp; &nbsp;
                                         <input type="text" name="uname" id='uname'/></p>
                                         <p>Password:   &nbsp; &nbsp;&nbsp;
-                                        <input type="text" name="password" id='passw'/></p>
+                                        <input type="password" name="password" id='passw'/></p>
                                         {/* <Link to={'./maincontent'}><button>ContinueNoLogin</button></Link> */}
                                         {/* <button name="New" onClick={() => loginHelper('sam','secret')}>Login</button> */}
                                         {/* <button name="New" onClick={ () => initiateAuthentication('sam','secret')}>Login as sam</button> */}
