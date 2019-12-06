@@ -3,6 +3,7 @@ import { ModalProvider, Modal } from '../components/loginModal';
 import { CallLogin, CallRegisterLogin } from '../components/apiCalls'
 import { withRouter,Link, Route, Redirect } from 'react-router-dom';
 import ReactDOM from 'react-dom';
+import {isLoggedIn} from '../App'
 
 const converted = {
     body: { margin: "0",backgroundColor: "#FECB4E"  },
@@ -84,6 +85,9 @@ class Welcome extends React.Component {
 }
 
 export function Landing() {
+    
+    
+
     const [isRegModalOpen, setRegModal] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
