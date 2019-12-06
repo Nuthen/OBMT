@@ -66,6 +66,7 @@ function CommentBubble(props, nestedModalArr) {
         nestedModalArr[3](props.Title);
         nestedModalArr[4](props.URL);
         nestedModalArr[5](props.Description);
+     
     }
 
     return (

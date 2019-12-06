@@ -47,7 +47,6 @@ export function CallRegisterLogin(name, pw, fName, lName) {
         })
             .then(res => {
                 if (res.data[0].success == 1) {
-                    console.log('it worked');
                     UserId = res.data[0].message;
                     return resolve(UserId);
                 }
@@ -159,7 +158,6 @@ export function addBookmark(uid, title, url, description, tags) {
 }
 
 export function getBookmarks(nestedModalArr) {
-    console.log("USER ID: " + UserId);
     return new Promise(function (resolve, reject) {
         axios.post(`/api/getBookmarks`, {
             UID: UserId

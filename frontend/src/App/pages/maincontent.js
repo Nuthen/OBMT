@@ -129,16 +129,16 @@ export function Main() {
     //if not it only will need minor tweaks
     function initiateSearch(str) {
         if (str.slice(-1) == ' ') {
-            console.log(str);
             //the following line may cause errors once the backend is fixxed
             //you can comment out the .then() part to make any errors stop
             CallSearch(str).then(updateBookmarkTable);
         }
     }
 
-    function editBMHelper(resp){
+    async function editBMHelper(resp){
         setNestedModal(false);
-        return getBookmarks();
+        const bookmarks = await getBookmarks(nestedModalArr);
+        return updateBookmarkTable(bookmarks);
     }
 
     function delBMHelper(){
@@ -177,11 +177,11 @@ export function Main() {
                                     document.getElementById("tags").value,
                                 ).then(addBookmarkHelper).then(updateBookmarkTable)
                                 }>Add bookmark</button>
+                                <button name="add_close" onClick={() => setBookMarkModal(false)}>close</button>
                             </Modal>
                         )}
                     </div>
                 </div>
-                <div>{console.log(isNestedModalOpen)}</div>
                 <div className="content-main" style={converted[".content-main"]}>
                     <div id='putboxhere' style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>
                         <Suspense>{bookmarkContainer}</Suspense>
@@ -189,7 +189,6 @@ export function Main() {
                 </div>
                 {isNestedModalOpen && (
                         <Modal onClose={() => setNestedModal(false)} style={converted[".bookmark_modal"]}>
-                            {/* <p>{nestedBID}</p> */}
                             <form>
                             <p>Title</p>
                             <input type="text" id="mod_title" value={nestedTitle} onChange={(e) => setNestedTitle(e.target.value)} />
@@ -198,7 +197,8 @@ export function Main() {
                             <p>Description</p>
                             <input type="text" id="mod_desc" value={nestedDesc} onChange={(e) => setnestedDesc(e.target.value)} />
                             </form>
-                            <button name="mod_bookmark" onClick={() => CallRegisterBookmark({nestedBID},{nestedTitle},{nestedURL},1,{nestedDesc}).then(editBMHelper).then(updateBookmarkTable)}>Submit</button>
+                            <button name="mod_bookmark" onClick={() => CallRegisterBookmark({nestedBID},{nestedTitle},{nestedURL},1,{nestedDesc}).then(editBMHelper)}>Submit</button>
+                            <button name="mod_close" onClick={() => setNestedModal(false)}>cancel</button>
                         </Modal>
                         )
                 }
@@ -207,6 +207,8 @@ export function Main() {
                 )
                 }
             </div>
+            
+            {/* {console.log('in main',isNestedModalOpen)} */}
         </ModalProvider>
 
     )
