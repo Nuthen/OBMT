@@ -159,16 +159,16 @@ export function Main() {
                         <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted[".add-bm"]}>Add Bookmark</div>
                         {isBookMarkModalOpen && (
                             <Modal onClose={() => setBookMarkModal(false)} style={converted[".bookmark-modal"]} >
-                                <p>title</p>
-                                <input type="text" name="title" id='title' />
-                                <p>url</p>
-                                <input type="text" name="url" id='url' />
-                                <p>priority</p>
-                                <input type="text" name="priority" id='priority' />
-                                <p>description</p>
-                                <input type="text" name="description" id="description" />
-                                <p>tags</p>
-                                <input type="text" name="tags" id="tags" />
+                                <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="text" name="title" id='title' /></p>
+                                <p>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="text" name="url" id='url' /></p>
+                                <p>Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="text" name="priority" id='priority' /></p>
+                                <p>Description:&nbsp;
+                                <input type="text" name="description" id="description" /></p>
+                                <p>Tags:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="text" name="tags" id="tags" /></p>
                                 <button name="Addbookmark" onClick={() => addBookmark(
                                     0,
                                     document.getElementById("title").value,
@@ -176,8 +176,8 @@ export function Main() {
                                     document.getElementById("description").value,
                                     document.getElementById("tags").value,
                                 ).then(addBookmarkHelper).then(updateBookmarkTable)
-                                }>Add bookmark</button>
-                                <button name="add_close" onClick={() => setBookMarkModal(false)}>close</button>
+                                }>Add Bookmark</button>&nbsp;
+                                <button name="add_close" onClick={() => setBookMarkModal(false)}>Close</button>
                             </Modal>
                         )}
                     </div>
