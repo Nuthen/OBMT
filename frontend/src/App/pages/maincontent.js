@@ -1,8 +1,7 @@
 import React, { Suspense, useState, useEffect } from 'react'
 import { ModalProvider, Modal } from '../components/loginModal';
-// import { Bookmark } from '../components/scrollingBox';
 import { addBookmark, getBookmarks, CallSearch, CallRegisterBookmark } from '../components/apiCalls';
-// import {SearchBar} from '../components/searchbar'
+
 
 const converted = {
     body: { margin: "0" },
@@ -78,8 +77,8 @@ const converted = {
 
 
 
-export function Main() {
 
+export function Main() {
     const [isNestedModalOpen, setNestedModal] = useState(false);
     const [nestedBID, setnestedBID] = useState('');
     const [nestedTitle, setNestedTitle] = useState('');
@@ -146,12 +145,12 @@ export function Main() {
         return getBookmarks(nestedModalArr).then(updateBookmarkTable);
     }
 
-
+    // function isLoggedIn()
+    
     return (
         <ModalProvider>
             <div className="shell" style={converted[".shell"]}>
                 <div className="content-bar" style={converted[".content-bar"]}>
-
                     <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="landing" style={converted[".logo a"]}>OBMT</a></h1></div>
 
                     <div style={converted[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted[".search"]} placeholder="search..." /></div>
@@ -207,8 +206,6 @@ export function Main() {
                 )
                 }
             </div>
-            
-            {/* {console.log('in main',isNestedModalOpen)} */}
         </ModalProvider>
 
     )
