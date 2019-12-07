@@ -646,7 +646,8 @@ app.post('/api/login', function (req,res) {
                 message:"There is an error with the query"
             }];
             
-            res.send('0');
+            // res.send('0');
+            res.json(returnValue);
         }
     
         //Check user input password against database information
@@ -698,7 +699,8 @@ app.post('/api/login', function (req,res) {
                         message:"Username and password does not match"
                     }]; 
                     
-                    res.send('0');
+                    // res.send('0');
+                    res.json(loginReport);
                 }
             }
             
@@ -709,7 +711,8 @@ app.post('/api/login', function (req,res) {
                     message:"Username and password does not match"
                 }]; 
                 
-                res.send('0');
+                // res.send('0');
+                res.json(loginReport);
             }
         }
         
@@ -721,7 +724,8 @@ app.post('/api/login', function (req,res) {
                 message:"Username does not exits"
             }];
             
-            res.send('0');
+            // res.send('0');
+            res.json(loginReport);
         }
         
         //Return results to front-end
