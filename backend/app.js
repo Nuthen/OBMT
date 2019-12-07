@@ -30,6 +30,7 @@ function getHomePage() {
 }
 
 global.searchQuery = {};
+global.getQuery = {};
 
 var allSessionUsers = {}
 
@@ -417,7 +418,7 @@ function scrapeTags(BID, URL) {
                 } else if (splits[i] == " ") {
                     console.log("space!");
                 }
-            }
+            } // TODO: remove tags that are less than a few letters, or not all caps, or don't include any symbols, or "I, my, me", etc
 
             let unique = [...new Set(splits)]; // put it into a set to avoid duplicates
             console.log(unique)
@@ -894,6 +895,73 @@ app.post('/api/CallRegisterLogin', function (req,res) {
     });
 });
 
+async function sendGetResults(res, UID, bookmarks) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    //console.log("2 seconds passed!");
+    
+    var BIDToReturn = {};
+    var returnBID = [];
+    
+    for (BID in global.getQuery[UID]) {
+        var searchScore = 0;
+        console.log("BID: " + BID);
+        console.log(JSON.parse(JSON.stringify(global.getQuery[UID][BID])));
+        
+        var tags = JSON.parse(JSON.stringify(global.getQuery[UID][BID]));
+        // TODO: base search score on the most recently created
+        /*for (var i = 0; i < tags.length; i++) {
+            console.log("Parsed tag: " + JSON.stringify(tags[i][0]));
+            
+            for (var j = 0; j < searchStrings.length; j++) {
+                if (tags[i][0] != null) {
+                    //console.log(tags[i][0].TagName + " vs " + searchStrings[j])
+                    if (tags[i][0].TagName.toLowerCase() == searchStrings[j].toLowerCase() && searchStrings[j] != "") {
+                        searchScore += 1;
+                    }
+                }
+            }
+        }
+        console.log("Search score: " + searchScore)*/
+        
+        //if (searchScore > 0) {
+            BIDToReturn[BID] = searchScore;
+            returnBID.push(BID);
+        //}
+    }
+    
+    returnBID.sort(function(a, b){return BIDToReturn[b]-BIDToReturn[a]});
+    
+    console.log(returnBID);
+    
+    //res.send()
+    //return returnBID;
+    
+    var returnBookmarks = []
+    
+    for (var i = 0; i < bookmarks.length; i++) {
+        //console.log(bookmarks[i].BID);
+        //console.log(JSON.stringify(bookmarks[i].BID));
+        for (var j = 0; j < returnBID.length; j++) {
+            console.log(bookmarks[i].BID + " vs " + returnBID[j]);
+            if (bookmarks[i].BID == returnBID[j]) {
+                bookmarks[i].Priority = j;
+                bookmarks[i].Tags = JSON.parse(JSON.stringify(global.getQuery[UID][bookmarks[i].BID]));
+                returnBookmarks.push(bookmarks[i]);
+            }
+        }
+    }
+    
+    console.log(returnBookmarks);
+    returnBookmarks.sort(function(a, b){return a.Priority-b.Priority});
+    
+    var returnValue = {
+        success: '1',
+        bookmarks: returnBookmarks
+    }
+                
+    res.json(returnValue);
+}
+
 // Requires UID parameter
 // returns result as {success='0',bookmarks={...}}
 app.post('/api/getBookmarks', function (req,res) {
@@ -932,6 +1000,7 @@ app.post('/api/getBookmarks', function (req,res) {
         }
         res.json(returnValue);
     } else {
+        global.getQuery[UID] = {}
         var bookmarkQuery = "SELECT * FROM `bookmark` WHERE UID = '" + UID + "'";
         
         // Query to get all of the user's bookmarks
@@ -955,19 +1024,28 @@ app.post('/api/getBookmarks', function (req,res) {
                     message:"Bookmarks retrieved."
                 }];
                 
-                var returnValue = {
-                    success: '1',
-                    bookmarks: results
-                }
-                console.log(JSON.stringify(results));
+                //var returnValue = {
+                //    success: '1',
+                //    bookmarks: results
+                //}
                 
-                res.json(returnValue);
+                //res.json(returnValue);
+                
+                // Alright so we have all the user's bookmarks. But we want to narrow it down by tag.
+                // Each bookmark has a BID.
+                console.log("Bookmarks found: " + results.length);
+                for (var i = 0; i < results.length; i++) {
+                    var bookmarkTags = getTags(UID, results[i].BID, true);
+                    console.log(bookmarkTags);
+                }
+    
+                sendGetResults(res, UID, results);
             }
         });
     }
 });
 
-function getTags(UID, BID) {
+function getTags(UID, BID, isGetBookmarks) {
     var tagQuery = "SELECT * FROM `bkhastag` WHERE BID = '" + BID + "'";
         
     var bookmarkReport;
@@ -1010,10 +1088,17 @@ function getTags(UID, BID) {
                             
                             //console.log("My tag name: " + JSON.stringify(tagName));
                             //foundTagNames.push(tagName["TagName"]);
-                            if (global.searchQuery[UID][BID] == null) {
-                                global.searchQuery[UID][BID] = []
+                            if (isGetBookmarks == null || isGetBookmarks == false) {
+                                if (global.searchQuery[UID][BID] == null) {
+                                    global.searchQuery[UID][BID] = []
+                                }
+                                global.searchQuery[UID][BID].push(tagName);
+                            } else {
+                                if (global.getQuery[UID][BID] == null) {
+                                    global.getQuery[UID][BID] = []
+                                }
+                                global.getQuery[UID][BID].push(tagName);
                             }
-                            global.searchQuery[UID][BID].push(tagName);
                             //if (global.searchQuery[UID][BID] != null) {
                             //    console.log(JSON.parse(JSON.stringify(global.searchQuery[UID][BID])));
                             //}
@@ -1080,6 +1165,7 @@ async function sendSearchResults(res, UID, bookmarks, SearchString) {
             console.log(bookmarks[i].BID + " vs " + returnBID[j]);
             if (bookmarks[i].BID == returnBID[j]) {
                 bookmarks[i].Priority = j;
+                bookmarks[i].Tags = JSON.parse(JSON.stringify(global.getQuery[UID][bookmarks[i].BID]));
                 returnBookmarks.push(bookmarks[i]);
             }
         }
