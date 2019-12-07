@@ -66,6 +66,11 @@ const converted = {
         textAlign: "center",
     },
 
+    ".bookmark_modal": {
+        width: 300,
+        textAlign: "center",
+    },
+
     ".content-main": {
         display: "flex",
         height: "100%",
@@ -74,9 +79,6 @@ const converted = {
     },
 
 };
-
-
-
 
 export function Main() {
     const [isNestedModalOpen, setNestedModal] = useState(false);
@@ -189,15 +191,15 @@ export function Main() {
                 {isNestedModalOpen && (
                         <Modal onClose={() => setNestedModal(false)} style={converted[".bookmark_modal"]}>
                             <form>
-                            <p>Title</p>
-                            <input type="text" id="mod_title" value={nestedTitle} onChange={(e) => setNestedTitle(e.target.value)} />
-                            <p>URL</p>
-                            <input type="text" id="mod_url" value={nestedURL} onChange={(e) => setnestedURL(e.target.value)} />
-                            <p>Description</p>
-                            <input type="text" id="mod_desc" value={nestedDesc} onChange={(e) => setnestedDesc(e.target.value)} />
+                            <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="text" id="mod_title" value={nestedTitle} onChange={(e) => setNestedTitle(e.target.value)} /></p>
+                            <p>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="text" id="mod_url" value={nestedURL} onChange={(e) => setnestedURL(e.target.value)} /></p>
+                            <p>Description:&nbsp;
+                            <input type="text" id="mod_desc" value={nestedDesc} onChange={(e) => setnestedDesc(e.target.value)} /></p>
                             </form>
-                            <button name="mod_bookmark" onClick={() => CallRegisterBookmark({nestedBID},{nestedTitle},{nestedURL},1,{nestedDesc}).then(editBMHelper)}>Submit</button>
-                            <button name="mod_close" onClick={() => setNestedModal(false)}>cancel</button>
+                            <p><button name="mod_bookmark" onClick={() => CallRegisterBookmark({nestedBID},{nestedTitle},{nestedURL},1,{nestedDesc}).then(editBMHelper)}>Submit</button>&nbsp;
+                            <button name="mod_close" onClick={() => setNestedModal(false)}>Cancel</button></p>
                         </Modal>
                         )
                 }
