@@ -1,6 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { CallDelete, CallRegisterBookmark } from './apiCalls'
-import { ModalProvider, Modal } from '../components/loginModal';
+import React from 'react';
+import { CallDelete } from './apiCalls'
 
 const modal_style = {
     ".bookmark-modal": {

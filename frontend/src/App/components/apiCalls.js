@@ -1,7 +1,6 @@
 // import { builtinModules } from 'module';
 import axios from 'axios';
-import { CommentBox, Bookmark } from '../components/scrollingBox';
-import React, { useCallback } from 'react'
+import { CommentBox } from '../components/scrollingBox';
 
 // PROTOTYPE FOR BACKEND CALL
 export function doSomething() {
@@ -11,7 +10,7 @@ export function doSomething() {
         })
 }// END PROTOTYPE
 
-let UserId = 0;
+var UserId = 0;
 
 // LOGIN CALL
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
@@ -22,14 +21,16 @@ export function CallLogin(name, pw) {
             password: pw
         })
             .then(res => {
-                if (res.data[0].success == 1) {
-                    UserId = res.data[1];
-                    return resolve(res.data[0].message);
-                }
-                else {
-                    //displayError
-                    return reject(false);
-                }
+                console.log(res.data)
+                    if (res.data[0].success === '1') {
+                        console.log('in area 1')
+                        UserId = res.data[1];
+                        return resolve(res.data[0].message);
+                    }
+                    else {
+                        console.log(res.data[0].message);
+                        return reject(res.data[0].message);
+                    }
             })
     });
 }
@@ -62,50 +63,50 @@ export function CallRegisterLogin(name, pw, fName, lName) {
 // EDIT CALL
 export function CallRegisterBookmark(bid, t, u, p, desc) {
     return new Promise(function (resolve, reject) {
-    axios.post(`/api/editBookmark`, {
-        // userId: UserId,
-        BID: bid.nestedBID,
-        Title: t.nestedTitle,
-        URL: u.nestedURL,
-        Priority: p,
-        Description: desc.nestedDesc,
-        // date: d,
-        // tags: tag
-    })
-        .then(res => {
-            if (res.data.success == 1) {
-                //displaySuccess
-                console.log('it worked');
-                return resolve(true);
-            }
-            else {
-                console.log('fail  :( edit bm)')
-                //displayError
-                return reject(false);
-            }
+        axios.post(`/api/editBookmark`, {
+            // userId: UserId,
+            BID: bid.nestedBID,
+            Title: t.nestedTitle,
+            URL: u.nestedURL,
+            Priority: p,
+            Description: desc.nestedDesc,
+            // date: d,
+            // tags: tag
         })
+            .then(res => {
+                if (res.data.success == 1) {
+                    //displaySuccess
+                    console.log('it worked');
+                    return resolve(true);
+                }
+                else {
+                    console.log('fail  :( edit bm)')
+                    //displayError
+                    return reject(false);
+                }
+            })
     });
 }
 
 //DELETE CALL
 export function CallDelete(uid, bid) {
     return new Promise(function (resolve, reject) {
-    axios.post(`/api/deleteBookmark`, {
-        userId: uid,
-        BID: bid
-    })
-        .then(res => {
-            if (res.data.success == 1) {
-                //displaySuccess
-                console.log('it worked')
-                return resolve(true);
-            }
-            else {
-                //displayError
-                console.log('it did not work')
-                return reject(false);
-            }
+        axios.post(`/api/deleteBookmark`, {
+            userId: uid,
+            BID: bid
         })
+            .then(res => {
+                if (res.data.success == 1) {
+                    //displaySuccess
+                    console.log('it worked')
+                    return resolve(true);
+                }
+                else {
+                    //displayError
+                    console.log('it did not work')
+                    return reject(false);
+                }
+            })
     });
 }
 
@@ -113,26 +114,26 @@ export function CallDelete(uid, bid) {
 export function CallSearch(searchString) {
 
     return new Promise(function (resolve, reject) {
-    axios.post(`/api/searchBookmarks`, {
-        UID: UserId,
-        SearchString: searchString
-    })
-        .then(res => {
-            if (res.data.success == 1) {
-                //handle returned here
-                //console.log(res.data.bookmarks)
-                //return resolve(res.data.bookmarks);
-                
-                var obj = res.data.bookmarks;
-                var tbl = CommentBox(obj);
-                return resolve(tbl);
-                
-            }
-            else {
-                //displayError
-                return reject(false);
-            }
+        axios.post(`/api/searchBookmarks`, {
+            UID: UserId,
+            SearchString: searchString
         })
+            .then(res => {
+                if (res.data.success == 1) {
+                    //handle returned here
+                    //console.log(res.data.bookmarks)
+                    //return resolve(res.data.bookmarks);
+
+                    var obj = res.data.bookmarks;
+                    var tbl = CommentBox(obj);
+                    return resolve(tbl);
+
+                }
+                else {
+                    //displayError
+                    return reject(false);
+                }
+            })
     });
 }
 
@@ -168,14 +169,14 @@ export function getBookmarks(nestedModalArr) {
                     //obj is just the bookmark data
                     var obj = res.data.bookmarks;
                     //commentBox returns a div we want to render
-                    var tbl = CommentBox(obj,nestedModalArr);
+                    var tbl = CommentBox(obj, nestedModalArr);
                     //resolve ''updates'' promise in maincontent.js
                     //updates is probably the wrong word.  it gives
                     //promise a value.
                     return resolve(tbl);
                 }
                 else {
-                    reject('Error loading table');
+                    reject(res.data.message);
                 }
             })
     });

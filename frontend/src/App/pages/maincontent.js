@@ -3,7 +3,7 @@ import { ModalProvider, Modal } from '../components/loginModal';
 import { addBookmark, getBookmarks, CallSearch, CallRegisterBookmark } from '../components/apiCalls';
 
 
-const converted = {
+const converted_main = {
     body: { margin: "0" },
     html: { boxSizing: "border-box" },
     "*, *::before, *::after": { boxSizing: "inherit", position: "relative" },
@@ -40,8 +40,12 @@ const converted = {
         justifyContent: "center",
     },
 
+    ".logout":{
+        order:"3",
+    },
+
     ".bookmark-box": {
-        order: "3",
+        order: "4",
         display: "flex",
         justifyContent: "flex-end",
         width: "33%",
@@ -80,7 +84,12 @@ const converted = {
 
 };
 
-export function Main() {
+
+
+export function Main(props) {
+
+    console.log(props)
+
     const [isNestedModalOpen, setNestedModal] = useState(false);
     const [nestedBID, setnestedBID] = useState('');
     const [nestedTitle, setNestedTitle] = useState('');
@@ -96,7 +105,7 @@ export function Main() {
     //*** to change when update happens,  add varriable name to list
     //*** every time that variable changes a rerender will be allowed
     //   https://stackoverflow.com/a/55481525
-    useEffect(() => getBookmarks(nestedModalArr).then(updateBookmarkTable), []);
+    useEffect(() => getBookmarks(nestedModalArr, (e) => alert(e)).then(updateBookmarkTable), []);
 
 
 
@@ -147,19 +156,23 @@ export function Main() {
         return getBookmarks(nestedModalArr).then(updateBookmarkTable);
     }
 
-    // function isLoggedIn()
+    function logOutHelper(props){
+        // props.Authenticator.isAuthenticated = false;
+        // props.Authenticator.authenticatedAs = null;
+    }
+
     
     return (
         <ModalProvider>
-            <div className="shell" style={converted[".shell"]}>
-                <div className="content-bar" style={converted[".content-bar"]}>
-                    <div style={converted[".logo-box"]} ><h1 className="logo" style={converted[".logo a"]} ><a href="landing" style={converted[".logo a"]}>OBMT</a></h1></div>
-
-                    <div style={converted[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted[".search"]} placeholder="search..." /></div>
-                    <div style={converted[".bookmark-box"]}>
-                        <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted[".add-bm"]}>Add Bookmark</div>
+            <div className="shell" style={converted_main[".shell"]}>
+                <div className="content-bar" style={converted_main[".content-bar"]}>
+                    <div style={converted_main[".logo-box"]} ><h1 className="logo" style={converted_main[".logo a"]} ><a href="landing" style={converted_main[".logo a"]}>OBMT</a></h1></div>
+                    <div style={converted_main[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted_main[".search"]} placeholder="search..." /></div>
+                    <div style={converted_main[".logout"]} onClick={() => logOutHelper(props)} >logout</div>
+                    <div style={converted_main[".bookmark-box"]}>
+                        <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted_main[".add-bm"]}>Add Bookmark</div>
                         {isBookMarkModalOpen && (
-                            <Modal onClose={() => setBookMarkModal(false)} style={converted[".bookmark-modal"]} >
+                            <Modal onClose={() => setBookMarkModal(false)} style={converted_main[".bookmark-modal"]} >
                                 <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <input type="text" name="title" id='title' /></p>
                                 <p>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -183,13 +196,13 @@ export function Main() {
                         )}
                     </div>
                 </div>
-                <div className="content-main" style={converted[".content-main"]}>
+                <div className="content-main" style={converted_main[".content-main"]}>
                     <div id='putboxhere' style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>
                         <Suspense>{bookmarkContainer}</Suspense>
                     </div>
                 </div>
                 {isNestedModalOpen && (
-                        <Modal onClose={() => setNestedModal(false)} style={converted[".bookmark_modal"]}>
+                        <Modal onClose={() => setNestedModal(false)} style={converted_main[".bookmark_modal"]}>
                             <form>
                             <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input type="text" id="mod_title" value={nestedTitle} onChange={(e) => setNestedTitle(e.target.value)} /></p>
