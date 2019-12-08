@@ -170,7 +170,7 @@ export function Main(props) {
                     <div style={converted_main[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted_main[".search"]} placeholder="search..." /></div>
                     <div style={converted_main[".logout"]} onClick={() => logOutHelper(props)} >logout</div>
                     <div style={converted_main[".bookmark-box"]}>
-                        <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted_main[".add-bm"]}>Add Bookmark</div>
+                        <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted_main[".add-bm"]}>Add Bookmark1</div>
                         {isBookMarkModalOpen && (
                             <Modal onClose={() => setBookMarkModal(false)} style={converted_main[".bookmark-modal"]} >
                                 <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -190,8 +190,8 @@ export function Main(props) {
                                     document.getElementById("description").value,
                                     document.getElementById("tags").value,
                                 ).then(addBookmarkHelper).then(updateBookmarkTable)
-                                }>Add Bookmark</button>&nbsp;
-                                <button name="add_close" onClick={() => setBookMarkModal(false)}>Close</button>
+                                }>Add New Bookmark</button>&nbsp;
+                                <button name="add_close" onClick={() => setBookMarkModal(false)}>Closeit</button>
                             </Modal>
                         )}
                     </div>

@@ -118,8 +118,6 @@ export function Main(props) {
   //   https://stackoverflow.com/a/55481525
   useEffect(() => getBookmarks(nestedModalArr, (e) => alert(e)).then(updateBookmarkTable), []);
 
-
-
   // Updates the state of the table with the response from 
   // the backend
   function updateBookmarkTable(bookmarks) {
@@ -127,7 +125,6 @@ export function Main(props) {
     return;
   }
 
-  //after a bookmark is added to backend and we receive response: close modal and refresh bookmark list
   function addBookmarkHelper(resp) {
     setBookMarkModal(false);
     return getBookmarks();
@@ -149,19 +146,38 @@ export function Main(props) {
   //part of the search functionality  -->  ***should*** just work once the backend returns lists.
   //if not it only will need minor tweaks
   function initiateSearch(str) {
-    if (str.slice(-1) == ' ') {
+    //if (str.slice(-1) == ' ') {
       //the following line may cause errors once the backend is fixxed
       //you can comment out the .then() part to make any errors stop
       CallSearch(str).then(updateBookmarkTable);
-    }
+    //}
   }
-
-  async function editBMHelper(resp) {
-    setNestedModal(false);
+  
+    //after a bookmark is added to backend and we receive response: close modal and refresh bookmark list
+  /*async function addBookmarkHelper(resp) {
+    
+    setBookMarkModal(false);
     const bookmarks = await getBookmarks(nestedModalArr);
+    //getBookmarks(nestedModalArr).then(updateBookmarkTable)
+      console.log("nestedModalArr");
+      console.log(nestedModalArr);
     return updateBookmarkTable(bookmarks);
-  }
-
+  }*/
+    
+    async function editBMHelper(resp) {
+        setNestedModal(false);
+      
+        const bookmarks = await getBookmarks(nestedModalArr);
+        return updateBookmarkTable(bookmarks);
+    }
+    
+    async function editSearch(resp) {
+        setNestedModal(false);
+        document.getElementById('searchWord').value = '';
+        const bookmarks = await getBookmarks(nestedModalArr);
+        return updateBookmarkTable(bookmarks);
+    }
+    
   function delBMHelper() {
     setnestedDelete(false);
     return getBookmarks(nestedModalArr).then(updateBookmarkTable);
@@ -178,7 +194,9 @@ export function Main(props) {
       <div className="shell" style={converted_main[".shell"]}>
         <div className="content-bar" style={converted_main[".content-bar"]}>
           <div style={converted_main[".logo-box"]} ><h1 className="logo" style={converted_main[".logo a"]} ><a href="landing" style={converted_main[".logo a"]}>OBMT</a></h1></div>
-          <div style={converted_main[".search-box"]}><input type="search" onChange={e => initiateSearch(e.target.value)} className="search" style={converted_main[".search"]} placeholder="search..." /></div>
+          <div style={converted_main[".search-box"]}><input type="search" id="searchWord" className="search" style={converted_main[".search"]} placeholder="search..." /> 
+            <button name="mod_searchbookmarksbutton" onClick={() => initiateSearch(document.getElementById('searchWord').value)}>Search</button>
+            <button name="mod_clearsearchbookmarksbutton" onClick={() => editSearch()}>Clear Search</button></div>
           <div style={converted_main[".logout"]} onClick={() => logOutHelper(props)} ><a href="landing">logout</a></div>
 
           <div style={converted_main[".bookmark-box"]}>
@@ -201,7 +219,7 @@ export function Main(props) {
                   document.getElementById("url").value,
                   document.getElementById("description").value,
                   document.getElementById("tags").value,
-                ).then(addBookmarkHelper).then(updateBookmarkTable)
+                ).then(addBookmarkHelper).then(editBMHelper)//.then(updateBookmarkTable)
                 }>Add Bookmark</button>&nbsp;
                                 <button name="add_close" onClick={() => setBookMarkModal(false)}>Close</button>
               </Modal>
@@ -380,7 +398,7 @@ export function Landing(props) {
                       <p>Username: &nbsp;&nbsp;
                                       <input type="text" name="uname" id="reguname" /></p>
                       <p>Password: &nbsp;&nbsp;&nbsp;
-                                      <input type="text" name="password" id="regpw" /></p>
+                                      <input type="password" name="password" id="regpw" /></p>
                       <p>First Name: &nbsp;
                                       <input type="text" name="fname" id="regfname" /></p>
                       <p>Last Name: &nbsp;
