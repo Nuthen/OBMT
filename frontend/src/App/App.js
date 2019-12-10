@@ -1,7 +1,9 @@
 import React, { Component, useState, useEffect, Suspense } from 'react';
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';  
+import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import { ModalProvider, Modal } from './components/loginModal';
 import { CallLogin, CallRegisterLogin, addBookmark, getBookmarks, CallSearch, CallRegisterBookmark } from './components/apiCalls'
+import { IoIosLogOut } from 'react-icons/io';
+
 
 const converted_main = {
   body: { margin: "0" },
@@ -40,8 +42,17 @@ const converted_main = {
     justifyContent: "center",
   },
 
-  ".logout": {
-    order: "3",
+  ".IoIosLogOut": {
+    color: "white",
+    // color: "#2699FB", 
+    // cursor: "pointer",
+    height: '100%',
+    width: '100%'
+  },
+
+  "IoIosLogOut": {
+    color: "white",
+    cursor: "pointer",
   },
 
   ".bookmark-box": {
@@ -59,11 +70,14 @@ const converted_main = {
     letterSpacing: ".45rem",
     fontFamily: '"Bauhaus 93", "Arial", sans-serif',
     fontSize: "8vh",
+    textShaddow: "1px 1px 1px #707070",
   },
 
   ".search": { height: "100%", width: "100%", fontSize: "40px" },
 
-  ".add-bm": { color: "white", fontFamily: '"Arial", sans-serif', fontSize: "4vh", fontWeight: 'bold', cursor: "pointer", },
+  ".add-bm": { color: "#2699FB", border: 'solid', borderColor: '#2699FB', fontFamily: '"Arial", sans-serif', fontSize: "3vh", fontWeight: 'bold', cursor: "pointer", },
+
+  ".add-bm-hover": { color: "white", border: 'solid', borderColor: 'white', fontFamily: '"Arial", sans-serif', fontSize: "3vh", fontWeight: 'bold', cursor: "pointer", },
 
   ".bookmark-modal": {
     width: 400,
@@ -138,7 +152,7 @@ export function Main(props) {
   const [isBookMarkModalOpen, setBookMarkModal] = useState(false);
   // arg1: isBookMarkModalOpen  ~~>   is the bookmark pop up open?  to start-> no hence false
   // arg2: setBookMarkModal   ~~>  when the button is clicked we call setBookMarkModal(true)  which sets the state to be true (the popup is open)
-  const [bookmarkContainer, setbookmarkContainer] = useState(<div>some filler</div>);
+  const [bookmarkContainer, setbookmarkContainer] = useState('');
   // arg1: bookmarkContainer  ~~> the entire div surrounding the bookmarks from the DB
   // arg2: When promsie is returned we update the state of the div to be the div containing the elements from the DB
 
@@ -147,13 +161,13 @@ export function Main(props) {
   //if not it only will need minor tweaks
   function initiateSearch(str) {
     //if (str.slice(-1) == ' ') {
-      //the following line may cause errors once the backend is fixxed
-      //you can comment out the .then() part to make any errors stop
-      CallSearch(str).then(updateBookmarkTable);
+    //the following line may cause errors once the backend is fixxed
+    //you can comment out the .then() part to make any errors stop
+    CallSearch(str).then(updateBookmarkTable);
     //}
   }
-  
-    //after a bookmark is added to backend and we receive response: close modal and refresh bookmark list
+
+  //after a bookmark is added to backend and we receive response: close modal and refresh bookmark list
   /*async function addBookmarkHelper(resp) {
     
     setBookMarkModal(false);
@@ -163,21 +177,21 @@ export function Main(props) {
       console.log(nestedModalArr);
     return updateBookmarkTable(bookmarks);
   }*/
-    
-    async function editBMHelper(resp) {
-        setNestedModal(false);
-      
-        const bookmarks = await getBookmarks(nestedModalArr);
-        return updateBookmarkTable(bookmarks);
-    }
-    
-    async function editSearch(resp) {
-        setNestedModal(false);
-        document.getElementById('searchWord').value = '';
-        const bookmarks = await getBookmarks(nestedModalArr);
-        return updateBookmarkTable(bookmarks);
-    }
-    
+
+  async function editBMHelper(resp) {
+    setNestedModal(false);
+
+    const bookmarks = await getBookmarks(nestedModalArr);
+    return updateBookmarkTable(bookmarks);
+  }
+
+  async function editSearch(resp) {
+    setNestedModal(false);
+    document.getElementById('searchWord').value = '';
+    const bookmarks = await getBookmarks(nestedModalArr);
+    return updateBookmarkTable(bookmarks);
+  }
+
   function delBMHelper() {
     setnestedDelete(false);
     return getBookmarks(nestedModalArr).then(updateBookmarkTable);
@@ -188,19 +202,26 @@ export function Main(props) {
     Authenticator.authenticatedAs = null;
   }
 
+  const [hoveredadd, setHoveredadd] = useState(".add-bm");
+  const toggleHoveradd = () => setHoveredadd(".add-bm-hover");
+  const toggleUnHoveradd = () => setHoveredadd(".add-bm");
+
+  const [hoveredlogout, setHoveredlogout] = useState(26);
+  const toggleHoverlogout = () => setHoveredlogout(24);
+  const toggleUnHoverlogout = () => setHoveredlogout(26);
+
 
   return (
     <ModalProvider>
       <div className="shell" style={converted_main[".shell"]}>
         <div className="content-bar" style={converted_main[".content-bar"]}>
           <div style={converted_main[".logo-box"]} ><h1 className="logo" style={converted_main[".logo a"]} ><a href="landing" style={converted_main[".logo a"]}>OBMT</a></h1></div>
-          <div style={converted_main[".search-box"]}><input type="search" id="searchWord" className="search" style={converted_main[".search"]} placeholder="search..." /> 
+          <div style={converted_main[".search-box"]}><input type="search" id="searchWord" className="search" style={converted_main[".search"]} placeholder="search..." />
             <button name="mod_searchbookmarksbutton" onClick={() => initiateSearch(document.getElementById('searchWord').value)}>Search</button>
             <button name="mod_clearsearchbookmarksbutton" onClick={() => editSearch()}>Clear Search</button></div>
-          <div style={converted_main[".logout"]} onClick={() => logOutHelper(props)} ><a href="landing">logout</a></div>
-
           <div style={converted_main[".bookmark-box"]}>
-            <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted_main[".add-bm"]}>Add Bookmark</div>
+            <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted_main[hoveredadd]} onMouseEnter={toggleHoveradd} onMouseLeave={toggleUnHoveradd}>Add Bookmark</div>
+            <div style={{ width: '10%', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hide' }}><a href="landing"><IoIosLogOut size={hoveredlogout} onMouseEnter={toggleHoverlogout} onMouseLeave={toggleUnHoverlogout} onClick={() => logOutHelper(props)} /></a></div>
             {isBookMarkModalOpen && (
               <Modal onClose={() => setBookMarkModal(false)} style={converted_main[".bookmark-modal"]} >
                 <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -228,7 +249,8 @@ export function Main(props) {
         </div>
         <div className="content-main" style={converted_main[".content-main"]}>
           <div id='putboxhere' style={{ display: 'flex', width: '50%', height: '100%', overflowY: 'hidden', justifyContent: 'flex-start' }}>
-            <Suspense>{bookmarkContainer}</Suspense>
+            <div id='putboxhere' style={{ display: 'flex', width: '100%', flexDirection: 'column', overflowX: 'hidden', listStyleType: 'none', backgroundColor: '#F1F9FF', alignItems: 'stretch', }}>
+              <Suspense>{bookmarkContainer}</Suspense></div>
           </div>
         </div>
         {isNestedModalOpen && (
@@ -328,8 +350,25 @@ const converted = {
     backgroundColor: "#2699FB",
     fontFamily: "Arial, Helvetica, sans-serif",
     fontSize: "xx-large",
-    color: "white"
+    color: "white",
+    cursor: "pointer",
+  },
+  ".access-box-hover": {
+    backgroundColor: "white",
+    color: "#2699FB",
+    display: "flex",
+    height: "40%",
+    width: "70%",
+    justifyContent: "space-around",
+    alignItems: "center",
+    borderStyle: "solid",
+    borderRadius: "25px",
+    borderColor: "#707070",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "xx-large",
+    cursor: "pointer",
   }
+
 };
 
 
@@ -364,6 +403,14 @@ export function Landing(props) {
     CallLogin(uname, pw).then(authenticateUser, (e) => { alert(e) });
   }
 
+  const [hoveredLogin, setHoveredLogin] = useState(".access-box");
+  const toggleHoverLogin = () => setHoveredLogin(".access-box-hover");
+  const toggleUnHoverLogin = () => setHoveredLogin(".access-box");
+
+  const [hoveredRegister, setHoveredRegister] = useState(".access-box");
+  const toggleHoverRegister = () => setHoveredRegister(".access-box-hover");
+  const toggleUnHoverRegister = () => setHoveredRegister(".access-box");
+
   return (
     <ModalProvider>
       <div>
@@ -376,7 +423,7 @@ export function Landing(props) {
               <div className="detail-circle" style={converted[".detail-circle"]}>Fast</div>
               <div className="access-container" style={converted[".access-container"]}>
                 {/* These next sections are the log in and register options */}
-                <div className="access-box" style={converted[".access-box"]}>
+                <div className="access-box" style={converted[hoveredLogin]} onMouseEnter={toggleHoverLogin} onMouseLeave={toggleUnHoverLogin}>
                   <div onClick={() => setIsModalOpen(true)}>Login</div>
                   {isModalOpen && (
                     <Modal onClose={() => setIsModalOpen(false)} style={{ width: 400, textAlign: "center" }}>
@@ -391,7 +438,7 @@ export function Landing(props) {
                     </Modal>
                   )}
                 </div>
-                <div className="access-box" style={converted[".access-box"]}>
+                <div className="access-box" style={converted[hoveredRegister]} onMouseEnter={toggleHoverRegister} onMouseLeave={toggleUnHoverRegister}>
                   <div onClick={() => setRegModal(true)}>Register</div>
                   {isRegModalOpen && (
                     <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
