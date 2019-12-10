@@ -53,9 +53,8 @@ const Overlay = styled.div`
 `;
 
 const Dialog = styled.div`
-  border: solid;
-  background-border:#0982AF; 
-  background: seashell;
+  background-border:#0982AF;
+  background: white;
   border-radius: 15px;
   padding: 20px;
   position: absolute;

@@ -44,8 +44,6 @@ const converted_main = {
 
   ".IoIosLogOut": {
     color: "white",
-    // color: "#2699FB", 
-    // cursor: "pointer",
     height: '100%',
     width: '100%'
   },
@@ -94,6 +92,34 @@ const converted_main = {
     height: "100%",
     justifyContent: "space-around",
     alignItems: "center"
+  },
+
+  ".txtInput": {
+    backgroundColor:'#F1F9FF',
+    borderRadius: '4px',
+    
+
+  },
+  ".modalButton":{
+    // cursor: "pointer",
+    backgroundColor:'inherit',
+    border:'solid',
+    color:'#2699FB',
+    
+  },
+  ".modalButton-hover":{
+    // cursor: "pointer",
+    backgroundColor:'white',
+    border:'solid',
+    color:'inherit',
+    borderColor:'inherit',
+    
+  },
+  ".modalButton-inside":{
+    backgroundColor:'inherit',
+    border:'solid',
+    color:'#2699FB',
+    cursor: "pointer",
   },
 
 };
@@ -210,6 +236,14 @@ export function Main(props) {
   const toggleHoverlogout = () => setHoveredlogout(24);
   const toggleUnHoverlogout = () => setHoveredlogout(26);
 
+  const [hoverSearch, setHoverSearch] = useState(".modalButton");
+  const toggleHovSrc = () => setHoverSearch(".modalButton-hover");
+  const toggleUnHovSrc = () => setHoverSearch(".modalButton");
+
+  const [hoverClear, setHoverClear] = useState(".modalButton");
+  const toggleHovClear = () => setHoverClear(".modalButton-hover");
+  const toggleUnHovClear = () => setHoverClear(".modalButton");
+
 
   return (
     <ModalProvider>
@@ -217,24 +251,26 @@ export function Main(props) {
         <div className="content-bar" style={converted_main[".content-bar"]}>
           <div style={converted_main[".logo-box"]} ><h1 className="logo" style={converted_main[".logo a"]} ><a href="landing" style={converted_main[".logo a"]}>OBMT</a></h1></div>
           <div style={converted_main[".search-box"]}><input type="search" id="searchWord" className="search" style={converted_main[".search"]} placeholder="search..." />
-            <button name="mod_searchbookmarksbutton" onClick={() => initiateSearch(document.getElementById('searchWord').value)}>Search</button>
-            <button name="mod_clearsearchbookmarksbutton" onClick={() => editSearch()}>Clear Search</button></div>
+            
+            <button name="mod_searchbookmarksbutton"  style={converted[hoverSearch]} onMouseEnter={toggleHovSrc} onMouseLeave={toggleUnHovSrc} onClick={() => initiateSearch(document.getElementById('searchWord').value)}>Search</button>
+            
+            <button name="mod_clearsearchbookmarksbutton" style={converted[hoverClear]} onMouseEnter={toggleHovClear} onMouseLeave={toggleUnHovClear} onClick={() => editSearch()}>Clear Search</button></div>
           <div style={converted_main[".bookmark-box"]}>
             <div className="add-bm" onClick={() => setBookMarkModal(true)} style={converted_main[hoveredadd]} onMouseEnter={toggleHoveradd} onMouseLeave={toggleUnHoveradd}>Add Bookmark</div>
             <div style={{ width: '10%', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hide' }}><a href="landing"><IoIosLogOut size={hoveredlogout} onMouseEnter={toggleHoverlogout} onMouseLeave={toggleUnHoverlogout} onClick={() => logOutHelper(props)} /></a></div>
             {isBookMarkModalOpen && (
               <Modal onClose={() => setBookMarkModal(false)} style={converted_main[".bookmark-modal"]} >
                 <p>Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="text" name="title" id='title' /></p>
+                                <input type="text" name="title" id='title' style={converted_main[".txtInput"]} /></p>
                 <p>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="text" name="url" id='url' /></p>
+                                <input type="text" name="url" id='url'  style={converted_main[".txtInput"]} /></p>
                 <p>Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="text" name="priority" id='priority' /></p>
+                                <input type="text" name="priority" id='priority' style={converted_main[".txtInput"]}  /></p>
                 <p>Description:&nbsp;
-                                <input type="text" name="description" id="description" /></p>
+                                <input type="text" name="description" id="description" style={converted_main[".txtInput"]}  /></p>
                 <p>Tags:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="text" name="tags" id="tags" /></p>
-                <button name="Addbookmark" onClick={() => addBookmark(
+                                <input type="text" name="tags" id="tags" style={converted_main[".txtInput"]}  /></p>
+                <button name="Addbookmark" style={converted_main['.modalButton-inside']} onClick={() => addBookmark(
                   0,
                   document.getElementById("title").value,
                   document.getElementById("url").value,
@@ -242,7 +278,7 @@ export function Main(props) {
                   document.getElementById("tags").value,
                 ).then(addBookmarkHelper).then(editBMHelper)//.then(updateBookmarkTable)
                 }>Add Bookmark</button>&nbsp;
-                                <button name="add_close" onClick={() => setBookMarkModal(false)}>Close</button>
+                                <button style={converted_main['.modalButton-inside']} name="add_close" onClick={() => setBookMarkModal(false)}>Close</button>
               </Modal>
             )}
           </div>
@@ -263,8 +299,8 @@ export function Main(props) {
               <p>Description:&nbsp;
                             <input type="text" id="mod_desc" value={nestedDesc} onChange={(e) => setnestedDesc(e.target.value)} /></p>
             </form>
-            <p><button name="mod_bookmark" onClick={() => CallRegisterBookmark({ nestedBID }, { nestedTitle }, { nestedURL }, 1, { nestedDesc }).then(editBMHelper)}>Submit</button>&nbsp;
-                            <button name="mod_close" onClick={() => setNestedModal(false)}>Cancel</button></p>
+            <p><button name="mod_bookmark" style={converted_main['.modalButton-inside']} onClick={() => CallRegisterBookmark({ nestedBID }, { nestedTitle }, { nestedURL }, 1, { nestedDesc }).then(editBMHelper)}>Submit</button>&nbsp;
+                            <button name="mod_close" style={converted_main['.modalButton-inside']} onClick={() => setNestedModal(false)}>Cancel</button></p>
           </Modal>
         )
         }
@@ -367,7 +403,19 @@ const converted = {
     fontFamily: "Arial, Helvetica, sans-serif",
     fontSize: "xx-large",
     cursor: "pointer",
-  }
+  },
+  ".txtInput": {
+    backgroundColor:'#F1F9FF',
+    borderRadius: '4px',
+    
+
+  },
+  ".modalButton":{
+    backgroundColor:'inherit',
+    border:'solid',
+    color:'#2699FB',
+    cursor: "pointer",
+  },
 
 };
 
@@ -426,14 +474,14 @@ export function Landing(props) {
                 <div className="access-box" style={converted[hoveredLogin]} onMouseEnter={toggleHoverLogin} onMouseLeave={toggleUnHoverLogin}>
                   <div onClick={() => setIsModalOpen(true)}>Login</div>
                   {isModalOpen && (
-                    <Modal onClose={() => setIsModalOpen(false)} style={{ width: 400, textAlign: "center" }}>
+                    <Modal onClose={() => setIsModalOpen(false)} style={{ display:'flex',flexDirection:'column' , width: 300, textAlign: "center" }}>
                       <p>Username: &nbsp; &nbsp;
-                    <input type="text" name="uname" id='uname' /></p>
+                    <input type="text" name="uname" id='uname' style={converted[".txtInput"]}/></p>
                       <p>Password:   &nbsp; &nbsp;&nbsp;
-                    <input type="password" name="password" id='passw' /></p>
+                    <input type="password" name="password" id='passw' style={converted[".txtInput"]} /></p>
                       <p>
-                        <button name="New" onClick={() => initiateAuthentication(document.getElementById("uname").value, document.getElementById("passw").value)}>Login</button>&nbsp;
-                    <button onClick={() => setIsModalOpen(false)}>Exit</button>
+                        <button name="New" style={converted['.modalButton']}  onClick={() => initiateAuthentication(document.getElementById("uname").value, document.getElementById("passw").value)}>Login</button>&nbsp;
+                    <button style={converted['.modalButton']}  onClick={() => setIsModalOpen(false)}>Exit</button>
                       </p>
                     </Modal>
                   )}
@@ -441,23 +489,22 @@ export function Landing(props) {
                 <div className="access-box" style={converted[hoveredRegister]} onMouseEnter={toggleHoverRegister} onMouseLeave={toggleUnHoverRegister}>
                   <div onClick={() => setRegModal(true)}>Register</div>
                   {isRegModalOpen && (
-                    <Modal onClose={() => setRegModal(false)} style={{ width: 400, textAlign: "center" }}>
+                    <Modal onClose={() => setRegModal(false)} style={{ display:'flex',flexDirection:'column', width: 300, textAlign: "center" }}>
                       <p>Username: &nbsp;&nbsp;
-                                      <input type="text" name="uname" id="reguname" /></p>
+                                      <input type="text" name="uname" id="reguname" style={converted[".txtInput"]}/></p>
                       <p>Password: &nbsp;&nbsp;&nbsp;
-                                      <input type="password" name="password" id="regpw" /></p>
+                                      <input type="password" name="password" id="regpw" style={converted[".txtInput"]}/></p>
                       <p>First Name: &nbsp;
-                                      <input type="text" name="fname" id="regfname" /></p>
+                                      <input type="text" name="fname" id="regfname" style={converted[".txtInput"]}/></p>
                       <p>Last Name: &nbsp;
-                                      <input type="text" name="lname" id="reglname" /></p>
-                      <br />
+                                      <input type="text" name="lname" id="reglname" style={converted[".txtInput"]}/></p>
                       <div id="register_response"></div>
-                      <p><button name="registerz" onClick={() => loginRegisterHelper(
+                      <p><button name="registerz" style={converted['.modalButton']} onClick={() => loginRegisterHelper(
                         document.getElementById("reguname").value,
                         document.getElementById("regpw").value,
                         document.getElementById("regfname").value,
                         document.getElementById("reglname").value
-                      )}>Register</button>&nbsp;<button onClick={() => setRegModal(false)}>Exit</button></p>
+                      )}>Register</button>&nbsp;<button style={converted['.modalButton']} onClick={() => setRegModal(false)}>Exit</button></p>
                     </Modal>
                   )}
                 </div>
