@@ -264,8 +264,8 @@ export function Main(props) {
                                 <input type="text" name="title" id='title' style={converted_main[".txtInput"]} /></p>
                 <p>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <input type="text" name="url" id='url'  style={converted_main[".txtInput"]} /></p>
-                <p>Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="text" name="priority" id='priority' style={converted_main[".txtInput"]}  /></p>
+                {/* <p>Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
+                                {/* <input type="text" name="priority" id='priority' style={converted_main[".txtInput"]}  /></p> */}
                 <p>Description:&nbsp;
                                 <input type="text" name="description" id="description" style={converted_main[".txtInput"]}  /></p>
                 <p>Tags:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -471,8 +471,8 @@ export function Landing(props) {
               <div className="detail-circle" style={converted[".detail-circle"]}>Fast</div>
               <div className="access-container" style={converted[".access-container"]}>
                 {/* These next sections are the log in and register options */}
-                <div className="access-box" style={converted[hoveredLogin]} onMouseEnter={toggleHoverLogin} onMouseLeave={toggleUnHoverLogin}>
-                  <div onClick={() => setIsModalOpen(true)}>Login</div>
+                <div className="access-box" onClick={() => setIsModalOpen(true)} style={converted[hoveredLogin]} onMouseEnter={toggleHoverLogin} onMouseLeave={toggleUnHoverLogin}>
+                  <div >Login</div>
                   {isModalOpen && (
                     <Modal onClose={() => setIsModalOpen(false)} style={{ display:'flex',flexDirection:'column' , width: 300, textAlign: "center" }}>
                       <p>Username: &nbsp; &nbsp;
@@ -486,8 +486,8 @@ export function Landing(props) {
                     </Modal>
                   )}
                 </div>
-                <div className="access-box" style={converted[hoveredRegister]} onMouseEnter={toggleHoverRegister} onMouseLeave={toggleUnHoverRegister}>
-                  <div onClick={() => setRegModal(true)}>Register</div>
+                <div className="access-box" onClick={() => setRegModal(true)} style={converted[hoveredRegister]} onMouseEnter={toggleHoverRegister} onMouseLeave={toggleUnHoverRegister}>
+                  <div >Register</div>
                   {isRegModalOpen && (
                     <Modal onClose={() => setRegModal(false)} style={{ display:'flex',flexDirection:'column', width: 300, textAlign: "center" }}>
                       <p>Username: &nbsp;&nbsp;
