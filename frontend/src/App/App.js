@@ -264,8 +264,8 @@ export function Main(props) {
                                 <input type="text" name="title" id='title' style={converted_main[".txtInput"]} /></p>
                 <p>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <input type="text" name="url" id='url'  style={converted_main[".txtInput"]} /></p>
-                {/* <p>Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
-                                {/* <input type="text" name="priority" id='priority' style={converted_main[".txtInput"]}  /></p> */}
+                <p>Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="text" name="priority" id='priority' style={converted_main[".txtInput"]}  /></p>
                 <p>Description:&nbsp;
                                 <input type="text" name="description" id="description" style={converted_main[".txtInput"]}  /></p>
                 <p>Tags:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
