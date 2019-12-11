@@ -13,16 +13,16 @@ const instance = axios.create({
     }*/
     
 });
+axios.defaults.withCredentials = true;
 
 // PROTOTYPE FOR BACKEND CALL
 export function doSomething() {
-    axios.get(`http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/getList`)
+    instance.get(`http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/getList`)
         .then(res => {
             console.log(res.data)
         })
 }// END PROTOTYPE
 
-axios.defaults.withCredentials = true;
 
 var UserId = 0;
 
@@ -31,7 +31,7 @@ var UserId = 0;
 export function CallLogin(name, pw) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/login', {
-            playername: name,
+            username: name,
             password: pw
         })
             .then(res => {
@@ -177,7 +177,6 @@ export function addBookmark(uid, title, url, description, tags) {
 export function getBookmarks(nestedModalArr) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/getBookmarks', {
-        axios.post(`/api/getBookmarks`, {
             UID: UserId
         })
             .then(res => {
