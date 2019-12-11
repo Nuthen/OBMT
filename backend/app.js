@@ -34,6 +34,8 @@ global.getQuery = {};
 
 var allSessionUsers = {}
 
+var loggedInUID = 0;
+
 //FOR TESTING REMOVE
 function loginValidation(){
 //app.post('/api/login', function (req,res) {
@@ -97,6 +99,8 @@ function loginValidation(){
                         success: '1',
                         message: uid
                     }];
+                    
+                    loggedInUID = uid;
                 }
                     
                 else{
@@ -293,6 +297,8 @@ function registrationValidation(){
                             }];
                             console.log('Return successful registration registration result'); 
                             console.log(returnValue);
+                            
+                            loggedInUID = UID;
                         }
                     });
                 }
@@ -692,7 +698,8 @@ app.post('/api/login', function (req,res) {
                 if(password==userResults[0].Password){
                     //res.redirect('/');
 
-                    uid = userResults[0].UID;
+                    //uid = userResults[0].UID;
+                    uid = loggedInUID;
                     console.log("UID logged in as");
                     console.log(uid);
                     
@@ -994,6 +1001,7 @@ async function sendGetResults(res, UID, bookmarks) {
 // Requires UID parameter
 // returns result as {success='0',bookmarks={...}}
 app.post('/api/getBookmarks', function (req,res) {
+    console.log("NODE is updated!");
     console.log("REQ BODY:" + JSON.stringify(req.session.userId));
     console.log("REQ:" + JSON.stringify(allSessionUsers));
     console.log("REQ:" + JSON.stringify(req.session));
@@ -1003,12 +1011,14 @@ app.post('/api/getBookmarks', function (req,res) {
     var loggedIn = false;
     var UID;
     
-    if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
+    /*if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
         loggedIn = allSessionUsers[req.sessionID].login;
         UID = allSessionUsers[req.sessionID].UID;
-    }
+    }*/
+    UID = loggedInUID;
+    console.log("Logged in UID: " + loggedInUID);
     
-    if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
+    /*if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
         var returnValue = {
             success: '0',
             message: "Invalid session: Are you logged in?"
@@ -1020,7 +1030,7 @@ app.post('/api/getBookmarks', function (req,res) {
             message: "Error: Not logged in."
         };
         res.json(returnValue);
-    } else if (UID == null) {
+    } else */if (UID == null) {
         console.log("Null UID");
         console.log("Get bookmarks failed due to null parameter.");
         
@@ -1223,12 +1233,13 @@ app.post('/api/searchBookmarks', function (req,res) {
     var loggedIn = false;
     var UID;
     
-    if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
+    /*if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
         loggedIn = allSessionUsers[req.sessionID].login;
         UID = allSessionUsers[req.sessionID].UID;
-    }
+    }*/
+    UID = loggedInUID;
     
-    if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
+    /*if (req.sessionID == null || allSessionUsers[req.sessionID] == null) {
         var returnValue = {
             success: '0',
             message: "Invalid session: Are you logged in?"
@@ -1240,7 +1251,7 @@ app.post('/api/searchBookmarks', function (req,res) {
             message: "Error: Not logged in."
         };
         res.json(returnValue);
-    } else if (UID == null) {
+    } else */if (UID == null) {
         console.log("Null UID");
         console.log("Get bookmarks failed due to null parameter.");
         
@@ -1335,7 +1346,9 @@ app.post('/api/addBookmark', function (req,res) {
     var loggedIn = false;
     var UID;
     
-    if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
+    UID = loggedInUID;
+    
+    /*if (req.sessionID != null && allSessionUsers[req.sessionID] != null) {
         loggedIn = allSessionUsers[req.sessionID].login;
         UID = allSessionUsers[req.sessionID].UID;
     }
@@ -1352,7 +1365,7 @@ app.post('/api/addBookmark', function (req,res) {
             message: "Error: Not logged in."
         };
         res.json(returnValue);
-    } else if (UID == null || Title == null || URL == null || Priority == null || Description == null) {
+    } else */if (UID == null || Title == null || URL == null || Priority == null || Description == null) {
         var returnValue = {
             success: '0',
         }
@@ -1368,7 +1381,7 @@ app.post('/api/addBookmark', function (req,res) {
         
         
 //var newdate = '2019-12-05';
-        var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "'";
+        var bookmarkQuery = "SELECT * FROM `bookmark` WHERE URL = '" + URL + "' AND UID = '" + UID + "'";
         var maxQuery = "SELECT MAX(BID) as BID FROM `bookmark`";
 
         var bookmarkReport;

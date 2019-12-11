@@ -154,23 +154,28 @@ export function CallSearch(searchString) {
 
 export function addBookmark(uid, title, url, description, tags) {
     return new Promise(function (resolve, reject) {
-        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/addBookmark', {
-            withCredentials: "true",
-            UID: uid,
-            Title: title,
-            URL: url,
-            Description: description,
-            Tags: tags
-        })
-            .then(res => {
-                if (res.data.success == 1) {
-                    return resolve(true);
-                }
-                else {
-                    console.log('it didn\'t work(addbookmark)');
-                    return resolve(false);
-                }
+        if (url.search("http://") == -1 && url.search("https://") == -1) {
+            alert("Invalid URL, must begin with http:// or https://");
+        } else {
+        
+            instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/addBookmark', {
+                withCredentials: "true",
+                UID: uid,
+                Title: title,
+                URL: url,
+                Description: description,
+                Tags: tags
             })
+                .then(res => {
+                    if (res.data.success == 1) {
+                        return resolve(true);
+                    }
+                    else {
+                        console.log('it didn\'t work(addbookmark)');
+                        return resolve(false);
+                    }
+                })
+        }
     });
 }
 
