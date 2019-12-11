@@ -1,0 +1,15 @@
+{
+    "obmtenv": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-obmtfront2-obmtenv-00203-authRole",
+            "UnauthRoleArn": "arn:aws:iam::510858274485:role/amplify-obmtfront2-obmtenv-00203-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::510858274485:role/amplify-obmtfront2-obmtenv-00203-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-obmtfront2-obmtenv-00203-deployment",
+            "UnauthRoleName": "amplify-obmtfront2-obmtenv-00203-unauthRole",
+            "StackName": "amplify-obmtfront2-obmtenv-00203",
+            "StackId": "arn:aws:cloudformation:us-west-2:510858274485:stack/amplify-obmtfront2-obmtenv-00203/3688a850-1b0a-11ea-a3bb-022a2754311a",
+            "AmplifyAppId": "d1635voqh1q3na"
+        }
+    }
+}

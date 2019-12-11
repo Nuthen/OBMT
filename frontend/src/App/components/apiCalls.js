@@ -2,9 +2,21 @@
 import axios from 'axios';
 import { CommentBox } from '../components/scrollingBox';
 
+const instance = axios.create({
+  baseURL: '',
+  timeout: 10000,
+  //headers: {'Content-Type': "application/x-www-form-urlencoded",'crossorigin': "true"}
+    /*headers:{
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTION' // Try this
+    }*/
+    
+});
+
 // PROTOTYPE FOR BACKEND CALL
 export function doSomething() {
-    axios.get(`/api/getList`)
+    axios.get(`http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/getList`)
         .then(res => {
             console.log(res.data)
         })
@@ -16,7 +28,7 @@ var UserId = 0;
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallLogin(name, pw) {
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/login`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/login', {
             username: name,
             password: pw
         })
@@ -40,7 +52,7 @@ export function CallLogin(name, pw) {
 // RESPONSE EXPECTED: res[0] = 1/0 or true/false && res[1] = UserId
 export function CallRegisterLogin(name, pw, fName, lName) {
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/CallRegisterLogin`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/CallRegisterLogin', {
             username: name,
             password: pw,
             firstname: fName,
@@ -63,7 +75,7 @@ export function CallRegisterLogin(name, pw, fName, lName) {
 // EDIT CALL
 export function CallRegisterBookmark(bid, t, u, p, desc) {
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/editBookmark`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/editBookmark', {
             // userId: UserId,
             BID: bid.nestedBID,
             Title: t.nestedTitle,
@@ -91,7 +103,7 @@ export function CallRegisterBookmark(bid, t, u, p, desc) {
 //DELETE CALL
 export function CallDelete(uid, bid) {
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/deleteBookmark`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/deleteBookmark', {
             userId: uid,
             BID: bid
         })
@@ -114,7 +126,7 @@ export function CallDelete(uid, bid) {
 export function CallSearch(searchString) {
 
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/searchBookmarks`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/searchBookmarks', {
             UID: UserId,
             SearchString: searchString
         })
@@ -139,7 +151,7 @@ export function CallSearch(searchString) {
 
 export function addBookmark(uid, title, url, description, tags) {
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/addBookmark`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/addBookmark', {
             UID: uid,
             Title: title,
             URL: url,
@@ -160,7 +172,7 @@ export function addBookmark(uid, title, url, description, tags) {
 
 export function getBookmarks(nestedModalArr) {
     return new Promise(function (resolve, reject) {
-        axios.post(`/api/getBookmarks`, {
+        instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/getBookmarks', {
             UID: UserId
         })
             .then(res => {

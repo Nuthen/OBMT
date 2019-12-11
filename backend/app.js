@@ -23,7 +23,7 @@ function getHomePage() {
     // execute query
     db.query(query, (err, result) => {
         if (err) {
-            res.redirect('/');
+            res.redirect('/landing');
         }
         console.log(result);
     });
@@ -526,11 +526,27 @@ function addTagToBookmark(BID, TID, TagName) {
 
 // create connection to database
 // the mysql.createConnection function takes in a configuration object which contains host, user, password and the database name.
-const db = mysql.createConnection ({
+/*const db = mysql.createConnection ({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'bookmarkmanager'
+});*/
+
+/*
+const db = mysql.createConnection ({
+    host: 'localhost',
+    user: 'group',
+    password: 'abcd',
+    database: 'BookmarkTool'
+});
+*/
+
+const db = mysql.createConnection ({
+    host: 'localhost',
+    user: 'BookmarkUser',
+    password: 'obeyempty',
+    database: 'OBMTDatabase10'
 });
 
 // connect to database
@@ -540,7 +556,7 @@ db.connect((err) => {
     }
     console.log('Connected to database');
     
-    getHomePage();
+    //getHomePage();
     //loginValidation();
     //registrationValidation();
 });
@@ -562,6 +578,14 @@ app.use(session({
         return uuidv4(); // use UUIDs for session IDs
     }
 }));
+
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Content-Type', 'application/x-www-form-urlencoded');
+  res.header('Accept', 'application/json');
+  next();
+});
 
 // routes for the app
 /*
@@ -636,6 +660,7 @@ app.post('/api/login', function (req,res) {
     }];
     
     var userQuery = "SELECT * FROM `user` WHERE Username = '" + username + "'";
+    console.log(userQuery);
     
     db.query(userQuery, (error, userResults) => {
         //Report query error
