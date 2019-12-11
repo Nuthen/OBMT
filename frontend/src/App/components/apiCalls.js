@@ -17,6 +17,7 @@ var UserId = 0;
 export function CallLogin(name, pw) {
     return new Promise(function (resolve, reject) {
         axios.post(`/api/login`, {
+            withCredentials: true,
             username: name,
             password: pw
         })
@@ -41,10 +42,12 @@ export function CallLogin(name, pw) {
 export function CallRegisterLogin(name, pw, fName, lName) {
     return new Promise(function (resolve, reject) {
         axios.post(`/api/CallRegisterLogin`, {
+            withCredentials: true,
             username: name,
             password: pw,
             firstname: fName,
-            lastname: lName
+            lastname: lName,
+            
         })
             .then(res => {
                 if (res.data[0].success == 1) {
@@ -65,6 +68,7 @@ export function CallRegisterBookmark(bid, t, u, p, desc) {
     return new Promise(function (resolve, reject) {
         axios.post(`/api/editBookmark`, {
             // userId: UserId,
+            withCredentials: true,
             BID: bid.nestedBID,
             Title: t.nestedTitle,
             URL: u.nestedURL,
@@ -92,6 +96,7 @@ export function CallRegisterBookmark(bid, t, u, p, desc) {
 export function CallDelete(uid, bid) {
     return new Promise(function (resolve, reject) {
         axios.post(`/api/deleteBookmark`, {
+            withCredentials: true,
             userId: uid,
             BID: bid
         })
@@ -115,6 +120,7 @@ export function CallSearch(searchString) {
 
     return new Promise(function (resolve, reject) {
         axios.post(`/api/searchBookmarks`, {
+            withCredentials: true,
             UID: UserId,
             SearchString: searchString
         })
@@ -140,6 +146,7 @@ export function CallSearch(searchString) {
 export function addBookmark(uid, title, url, description, tags) {
     return new Promise(function (resolve, reject) {
         axios.post(`/api/addBookmark`, {
+            withCredentials: true,
             UID: uid,
             Title: title,
             URL: url,
@@ -161,6 +168,7 @@ export function addBookmark(uid, title, url, description, tags) {
 export function getBookmarks(nestedModalArr) {
     return new Promise(function (resolve, reject) {
         axios.post(`/api/getBookmarks`, {
+            withCredentials: true,
             UID: UserId
         })
             .then(res => {
