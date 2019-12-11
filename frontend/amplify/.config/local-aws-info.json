@@ -1,0 +1,7 @@
+{
+    "obmtenv": {
+        "configLevel": "project",
+        "useProfile": true,
+        "profileName": "rp3"
+    }
+}

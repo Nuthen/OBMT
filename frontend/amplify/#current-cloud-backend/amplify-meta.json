@@ -1,0 +1,33 @@
+{
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "amplify-obmtfront2-obmtenv-00203-authRole",
+			"UnauthRoleArn": "arn:aws:iam::510858274485:role/amplify-obmtfront2-obmtenv-00203-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::510858274485:role/amplify-obmtfront2-obmtenv-00203-authRole",
+			"Region": "us-west-2",
+			"DeploymentBucketName": "amplify-obmtfront2-obmtenv-00203-deployment",
+			"UnauthRoleName": "amplify-obmtfront2-obmtenv-00203-unauthRole",
+			"StackName": "amplify-obmtfront2-obmtenv-00203",
+			"StackId": "arn:aws:cloudformation:us-west-2:510858274485:stack/amplify-obmtfront2-obmtenv-00203/3688a850-1b0a-11ea-a3bb-022a2754311a",
+			"AmplifyAppId": "d1635voqh1q3na"
+		}
+	},
+	"hosting": {
+		"S3AndCloudFront": {
+			"service": "S3AndCloudFront",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-obmtfront2-obmtenv-00203-deployment/amplify-cfn-templates/hosting/template.json",
+				"logicalId": "hostingS3AndCloudFront"
+			},
+			"lastPushTimeStamp": "2019-12-11T01:08:47.490Z",
+			"output": {
+				"S3BucketSecureURL": "https://obmtfront2-20191210000619-hostingbucket-obmtenv.s3.amazonaws.com",
+				"WebsiteURL": "http://obmtfront2-20191210000619-hostingbucket-obmtenv.s3-website-us-west-2.amazonaws.com",
+				"Region": "us-west-2",
+				"HostingBucketName": "obmtfront2-20191210000619-hostingbucket-obmtenv"
+			},
+			"lastPushDirHash": "/PotmypF4UCIiFJ1o5Q39mzxBbs="
+		}
+	}
+}
