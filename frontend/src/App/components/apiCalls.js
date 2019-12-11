@@ -29,7 +29,8 @@ var UserId = 0;
 export function CallLogin(name, pw) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/login', {
-            username: name,
+            withCredentials: "true",
+            playername: name,
             password: pw
         })
             .then(res => {
@@ -53,10 +54,12 @@ export function CallLogin(name, pw) {
 export function CallRegisterLogin(name, pw, fName, lName) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/CallRegisterLogin', {
+            withCredentials: "true",
             username: name,
             password: pw,
             firstname: fName,
-            lastname: lName
+            lastname: lName,
+            
         })
             .then(res => {
                 if (res.data[0].success == 1) {
@@ -76,6 +79,7 @@ export function CallRegisterLogin(name, pw, fName, lName) {
 export function CallRegisterBookmark(bid, t, u, p, desc) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/editBookmark', {
+            withCredentials: "true",
             // userId: UserId,
             BID: bid.nestedBID,
             Title: t.nestedTitle,
@@ -104,6 +108,7 @@ export function CallRegisterBookmark(bid, t, u, p, desc) {
 export function CallDelete(uid, bid) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/deleteBookmark', {
+            withCredentials: "true",
             userId: uid,
             BID: bid
         })
@@ -127,6 +132,7 @@ export function CallSearch(searchString) {
 
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/searchBookmarks', {
+            withCredentials: "true",
             UID: UserId,
             SearchString: searchString
         })
@@ -152,6 +158,7 @@ export function CallSearch(searchString) {
 export function addBookmark(uid, title, url, description, tags) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/addBookmark', {
+            withCredentials: "true",
             UID: uid,
             Title: title,
             URL: url,
@@ -173,6 +180,7 @@ export function addBookmark(uid, title, url, description, tags) {
 export function getBookmarks(nestedModalArr) {
     return new Promise(function (resolve, reject) {
         instance.post('http://ec2-34-209-54-130.us-west-2.compute.amazonaws.com:5000/api/getBookmarks', {
+            withCredentials: "true",
             UID: UserId
         })
             .then(res => {
