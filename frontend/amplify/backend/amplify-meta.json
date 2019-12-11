@@ -20,7 +20,7 @@
                 "s3TemplateURL": "https://s3.amazonaws.com/amplify-obmtfront2-obmtenv-00203-deployment/amplify-cfn-templates/hosting/template.json",
                 "logicalId": "hostingS3AndCloudFront"
             },
-            "lastPushTimeStamp": "2019-12-11T01:58:34.660Z",
+            "lastPushTimeStamp": "2019-12-11T02:31:15.939Z",
             "output": {
                 "S3BucketSecureURL": "https://obmtfront2-20191210000619-hostingbucket-obmtenv.s3.amazonaws.com",
                 "WebsiteURL": "http://obmtfront2-20191210000619-hostingbucket-obmtenv.s3-website-us-west-2.amazonaws.com",
